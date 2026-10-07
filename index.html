@@ -91,6 +91,7 @@
     padding:10px 15px;border-radius:13px;font-weight:800;font-size:14px;transition:.2s;
   }
   .board-actions button:hover{background:var(--honey);border-color:var(--honey);color:#3a2716;transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.25)}
+  .board-actions button.hot{border-color:var(--honey);background:rgba(242,177,52,.16)}
 
   /* ============ ПАНЕЛЬ НЕДЕЛИ И ДНЕЙ ============ */
   .tabsbar{
@@ -247,9 +248,18 @@
   .preview img{max-height:150px;border-radius:12px;box-shadow:var(--shadow);border:4px solid #fff}
   .sl{display:block;font-weight:800;font-size:14px;color:var(--ink-soft);margin:6px 0 14px}
   .sl input{width:100%;accent-color:var(--terra);margin-top:8px}
+  .tin{width:100%;padding:10px 12px;border:1.6px solid #e0c39a;border-radius:11px;font:inherit;font-weight:600;background:#fffdf7;color:var(--ink)}
+  .tin:focus{outline:none;border-color:var(--terra)}
   .dlg-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
   .primary{background:var(--terra);color:#fff;border:none;border-radius:11px;padding:10px 18px;font-weight:800;font-size:14px;transition:.18s}
   .primary:hover{background:#bf4e1a;transform:translateY(-2px);box-shadow:0 8px 18px rgba(217,93,36,.35)}
+  .conflict-p{font-size:15px;margin-bottom:16px}
+  .conflict-p b{color:var(--terra)}
+  .help{margin-top:16px;font-size:13px;color:var(--ink-soft)}
+  .help summary{cursor:pointer;font-weight:800;color:var(--caramel)}
+  .help ol{padding-left:20px;margin-top:8px}
+  .help li{margin:6px 0}
+  .help code{background:#f6e8cf;padding:1px 6px;border-radius:6px;font-size:12px}
 
   #toast{
     position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);opacity:0;z-index:99;
@@ -278,7 +288,7 @@
   @media print{
     @page{margin:12mm}
     body{background:#fff}
-    #bgPhoto,#bgTint,.glow,.floaters,.no-print,.tabsbar,.day-tools,.add-dish,.del,.footer .love,.footer button{display:none!important}
+    #bgPhoto,#bgTint,.glow,.floaters,.no-print,.tabsbar,.day-tools,.add-dish,.del,.board-actions,.footer .love,.footer button{display:none!important}
     .board{background:#fff;color:var(--ink);border-bottom:3px solid #ccc;box-shadow:none}
     .board h1{color:var(--ink);text-shadow:none}.board .eyebrow,.board .sub{color:#666}
     .fchip{border-color:#999;background:#fff}.fchip b{color:#222}.fchip i{color:#666}.fchip::after{display:none}
@@ -318,7 +328,9 @@
     <div class="family" id="family"></div>
     <div class="pot" aria-hidden="true"><span class="steam"></span><span class="steam"></span><span class="steam"></span>🍲</div>
     <div class="board-actions no-print">
+      <button id="btnSync" class="hot" title="Облачная синхронизация между устройствами семьи">☁ Облако</button>
       <button id="btnPhoto" title="Сменить фоновую фотографию">📷 Фото</button>
+      <button id="btnExport" title="Сохранить файл с текущим меню и фото — резервная копия">📤 Копия</button>
       <button id="btnPrint" title="Распечатать меню на неделю">🖨 Печать</button>
     </div>
   </div>
@@ -351,7 +363,7 @@
 <dialog id="photoDialog">
   <div class="dlg-head"><span class="pava" style="--c:#f2b134">📷</span><span>Фон страницы — наша фотография</span></div>
   <div class="dlg-body">
-    <label class="drop" for="fileIn">🖼 Выберите семейное фото…<br><small style="font-weight:600;color:#b08a58">JPG или PNG, сохранится только на этом устройстве</small>
+    <label class="drop" for="fileIn">🖼 Выберите семейное фото…<br><small style="font-weight:600;color:#b08a58">JPG или PNG, сохранится на устройстве, в копиях файла и в облаке</small>
       <input type="file" id="fileIn" accept="image/*" hidden>
     </label>
     <div class="preview"><img id="prevImg" alt="Текущее фоновое фото"></div>
@@ -372,6 +384,49 @@
   <div class="dlg-body" id="personBody"></div>
 </dialog>
 
+<!-- диалог: выбор версии меню -->
+<dialog id="conflictDialog">
+  <div class="dlg-head"><span class="pava" style="--c:#f2b134">🔄</span><span>Две версии меню — какую оставить?</span></div>
+  <div class="dlg-body">
+    <p class="conflict-p" id="conflictText"></p>
+    <div class="dlg-actions">
+      <button class="ghost" id="keepMine">Оставить мою</button>
+      <button class="primary" id="takeRemote">Взять другую</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- диалог: облако -->
+<dialog id="syncDialog">
+  <div class="dlg-head"><span class="pava" style="--c:#6f8f3f">☁</span><span>Облако семьи (GitHub)<small id="syncStatus">не подключено</small></span></div>
+  <div class="dlg-body">
+    <label class="sl">ID секретного gist (файл menu.json)
+      <input class="tin" id="inpGist" placeholder="например, 4f1c9a… длинный код из ссылки" autocomplete="off">
+    </label>
+    <label class="sl">Код доступа (токен, галка только gist)
+      <input class="tin" id="inpToken" type="password" placeholder="ghp_…" autocomplete="off">
+    </label>
+    <div class="dlg-actions">
+      <button class="ghost" id="btnMakeLink" title="Скопировать ссылку со встроенным кодом — отправить жене">🔗 Ссылка для семьи</button>
+      <button class="ghost" id="btnPull">⬇ Загрузить</button>
+      <button class="ghost" id="btnPush">⬆ Отправить</button>
+      <button class="primary" id="btnSaveSync">Сохранить и подключить</button>
+    </div>
+    <details class="help">
+      <summary>Как подключить (один раз, ~5 минут; регистрация только у одного из семьи)</summary>
+      <ol>
+        <li>github.com → создать бесплатный аккаунт (тому, кто настраивает).</li>
+        <li>gist.github.com → имя файла <code>menu.json</code>, содержимое <code>{}</code> → кнопка <b>Create secret gist</b>. Скопировать ID из адресной строки (хвост ссылки после последнего «/»).</li>
+        <li>GitHub → Settings → Developer settings → Personal access tokens → <b>Tokens (classic)</b> → Generate new token → отметить <b>только галку gist</b> → создать → скопировать токен (показывается один раз).</li>
+        <li>Вставить ID и токен выше → «Сохранить и подключить» → «⬆ Отправить» (меню уедет в облако).</li>
+        <li>Рекомендуется: создать репозиторий <code>menu</code>, загрузить эту страницу как <code>index.html</code>, Settings → Pages → ветка <code>main</code> → появится ссылка вида <code>https://логин.github.io/menu/</code>. В ссылке нет личных данных — только «движок».</li>
+        <li>«🔗 Ссылка для семьи» → отправить второму супругу в любом мессенджере: ссылка откроет страницу и сама подставит код доступа. На iPhone: Поделиться → «На экран „Домой“».</li>
+        <li>Дальше оба просто жмут «☁ Облако → ⬆/⬇» или страница сама предложит свежую версию при открытии. Код можно отозвать в любой момент: Settings → Tokens → Delete.</li>
+      </ol>
+    </details>
+  </div>
+</dialog>
+
 <div id="copyMenu" class="popmenu"></div>
 <div id="toast"></div>
 
@@ -384,7 +439,6 @@ const PEOPLE=[
   {id:'vera', name:'Вера', emoji:'👶', color:'#e9a13b', note:'отдельно, без соли и сахара, пюрируем'}
 ];
 
-/* -------- персональные памятки: правила + продукты по приоритетам -------- */
 const PERSON_TIPS={
  papa:{
   tagline:'Памятка: печень + курс на лёгкость',
@@ -407,7 +461,7 @@ const PERSON_TIPS={
   rules:[
    '<b>Температура:</b> еда приятно тёплая (примерно 35–45 °C). Суп и чай после кипячения остужаем; ничего обжигающего, ничего ледяного и «straight из холодильника», мороженое — пауза.',
    '<b>Частота:</b> 5–6 раз в день небольшими порциями (250–300 мл), примерно в одно время, перерывы не больше 3,5–4 часов. При дискинезии по гипомоторному типу регулярная еда + ложка растительного масла в блюдо — лучшая помощь желчеоттоку.',
-   '<b>Кислое — пауза, пока заживают эрозии:</b> цитрусовые и их соки, киви, ананас, гранат, кислые яблоки и сливы, клюква и смородина, помидоры и томатная паста, квашеная капуста и соленья, квасс и уксус в заправках.',
+   '<b>Кислое — пауза, пока заживают эрозии:</b> цитрусовые и их соки, киви, ананас, гранат, кислые яблоки и сливы, клюква и смородина, помидоры и томатная паста, квашеная капуста и соленья, квас и уксус в заправках.',
    '<b>Грубая клетчатка — ограничить:</b> сырая белокочанная капуста, редис и редька, болгарский перец и огурцы с грубой кожицей, грибы, бобовые (фасоль, горох, чечевица), кукуруза, отруби и чёрный хлеб с отрубями, орехи и семечки, кожица яблок и винограда, грубая курага и чернослив. Овощи — варёные, тушёные, запечённые; фрукты — печёные или мягкие, без кожи.',
    '<b>Острое — убрать:</b> чили, хрен, горчица, аджика, острые соусы; сырой чеснок и лук — по минимуму, в блюдах варёными — можно.',
    '<b>Кофе (латте):</b> не натощак! Лучшее время — через 30–40 минут после тёплого завтрака (овсянка, запеканка). До 1 чашки в день (200–250 мл), тёплый, не обжигающий. Латте с молоком — самый щадящий кофейный вариант для желудка, выбор отличный.',
@@ -438,7 +492,7 @@ const PERSON_TIPS={
   tagline:'Памятка: отдельная кастрюлька, всё пюрируем',
   rules:[
    '<b>Без соли и сахара:</b> порцию из общей кастрюли откладываем до соления; вкус — натуральный.',
-   '<b>Консистенция по возрасту:</b> пюре → мелко рубленое → мягкие кусочки; новые текстуры вводимо постепенно.',
+   '<b>Консистенция по возрасту:</b> пюре → мелко рубленое → мягкие кусочки; новые текстуры вводим постепенно.',
    '<b>Новый продукт:</b> по одному, 3–5 дней, в первой половине дня — следим за кожей и животиком.',
    '<b>Опасно (подавиться/аллергия):</b> целые орехи и виноградины, попкорн, мёд до года, коровье молоко как напиток до года (кисломолочка — можно).',
    '<b>Температура:</b> всегда пробуем сами — еда тёплая, не горячая.',
@@ -515,23 +569,44 @@ function defaultWeek(){return[
    note:'Вере: капусту тушить дольше, порция небольшая.'})}
 ];}
 
-/* ================== СОСТОЯНИЕ И НЕДЕЛИ ================== */
+/* ================== СОСТОЯНИЕ, НЕДЕЛИ, ПЕРЕНОС ================== */
 const LS_KEY='familyMenuBoard.v2';
+const SYNC_KEY='familyMenuSync.v1';
 const todayIdx=(new Date().getDay()+6)%7;
 const pad=n=>String(n).padStart(2,'0');
 const keyOf=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const mondayDate=off=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-todayIdx+off*7);return d;};
-
-let state;
 const curKey=keyOf(mondayDate(0));
-try{
-  const saved=JSON.parse(localStorage.getItem(LS_KEY)||localStorage.getItem('familyMenuBoard.v1'));
-  if(saved&&saved.weeks){state=saved;}
-  else if(saved&&saved.week){state={weeks:{[curKey]:saved.week},tint:saved.tint??0.6,photo:saved.photo??null};}
-  else state=null;
-}catch(e){state=null;}
+
+/* код доступа может приехать ссылкой: …/#gist=…&token=… */
+let SYNC=(()=>{try{return JSON.parse(localStorage.getItem(SYNC_KEY))||{gist:'',token:''}}catch(e){return{gist:'',token:''}}})();
+(function(){
+  const h=new URLSearchParams(location.hash.slice(1));
+  const g=h.get('gist'),t=h.get('token');
+  if(g){SYNC.gist=g;SYNC.token=t||SYNC.token;
+    try{localStorage.setItem(SYNC_KEY,JSON.stringify(SYNC))}catch(e){}
+    history.replaceState(null,'',location.pathname+location.search);}
+})();
+function saveSync(){try{localStorage.setItem(SYNC_KEY,JSON.stringify(SYNC))}catch(e){}}
+
+const EMBEDDED=(()=>{const el=document.getElementById('embedded-state');if(!el)return null;
+  try{return JSON.parse(el.textContent)}catch(e){return null}})();
+
+let savedRaw=null;
+try{savedRaw=JSON.parse(localStorage.getItem(LS_KEY)||localStorage.getItem('familyMenuBoard.v1'));}catch(e){}
+let state=(savedRaw&&savedRaw.weeks)?savedRaw
+        :(savedRaw&&savedRaw.week)?{weeks:{[curKey]:savedRaw.week},tint:savedRaw.tint??0.6,photo:savedRaw.photo??null}
+        :null;
+const hadLocal=!!state;
 if(!state)state={weeks:{},tint:.6,photo:null};
-if(!state.weeks[curKey])state.weeks[curKey]=defaultWeek();
+
+let pendingRemote=null, pendingLabel='';
+if(EMBEDDED&&EMBEDDED.weeks){
+  const lt=hadLocal?(state.ts||0):0, et=EMBEDDED.ts||0;
+  if(!hadLocal||et>lt){ state=EMBEDDED; }
+  else if(et<lt){ pendingRemote=EMBEDDED; pendingLabel='встроенную в открытый файл'; }
+}
+if(!state.weeks[curKey]) state.weeks[curKey]=(!hadLocal&&!EMBEDDED)?defaultWeek():emptyWeek();
 
 let offset=0;
 let WK=state.weeks[curKey];
@@ -542,6 +617,7 @@ const $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const dateFor=i=>{const d=mondayDate(offset);d.setDate(d.getDate()+i);return d;};
 const fmtDate=d=>`${d.getDate()} ${MGEN[d.getMonth()]}`;
+const fmtTs=ts=>ts?new Date(ts).toLocaleString('ru-RU',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):'без даты';
 function plural(n){const w=(n%10===1&&n%100!==11)?'блюдо':(n%10>=2&&n%10<=4&&(n%100<12||n%100>14))?'блюда':'блюд';return `${n} ${w}`;}
 
 /* ================== РЕНДЕР ================== */
@@ -564,7 +640,7 @@ function openPerson(id){
       <div class="grp ${k}"><h4>${title}</h4>
         <div class="pills">${t[k].map(x=>`<span class="pill">${x}</span>`).join('')}</div>
       </div>`).join('')}
-    <p class="fine-sm">Семейная шпаргалка по принципам щадящего питания (стоły №1 и №5 как основа); сомнения по конкретным продуктам — сверяем с врачом.</p>`;
+    <p class="fine-sm">Семейная шпаргалка по принципам щадящего питания (за основу взяты столы №1 и №5); сомнения по конкретным продуктам сверяем с врачом.</p>`;
   $('#personDialog').showModal();
 }
 function renderWeekRange(){
@@ -662,19 +738,126 @@ function setWeek(off){
   WK=state.weeks[k];
   renderWeekRange();updateWeekNav();renderTabs();renderAllDays();showDay(activeDay);save();
 }
+function applyRemote(next){
+  state=next;
+  if(!state.weeks)state.weeks={};
+  if(!state.weeks[curKey])state.weeks[curKey]=emptyWeek();
+  WK=state.weeks[curKey];
+  setWeek(offset);applyBg();save();
+}
 
 /* ================== СОХРАНЕНИЕ ================== */
 function save(){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>{
+    state.ts=Date.now();
     try{localStorage.setItem(LS_KEY,JSON.stringify(state));}
     catch(e){try{localStorage.setItem(LS_KEY,JSON.stringify({...state,photo:null}));}catch(e2){}}
   },400);
 }
 function toast(msg){
   const t=$('#toast');t.textContent=msg;t.classList.add('show');
-  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2000);
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
 }
+
+/* ================== ОБЛАКО (GitHub gist) ================== */
+function syncHeaders(auth){
+  const h={'Accept':'application/vnd.github+json'};
+  if(auth&&SYNC.token)h['Authorization']='Bearer '+SYNC.token;
+  return h;
+}
+async function gistGet(){
+  const r=await fetch('https://api.github.com/gists/'+SYNC.gist,{headers:syncHeaders(true)});
+  if(!r.ok)throw new Error('gist недоступен (HTTP '+r.status+')');
+  const j=await r.json();
+  const f=j.files&&j.files['menu.json'];
+  if(!f)throw new Error('в gist нет файла menu.json');
+  let content=f.content;
+  if(f.truncated){content=await (await fetch(f.raw_url)).text();}
+  return JSON.parse(content);
+}
+async function gistPush(){
+  state.ts=Date.now();
+  const r=await fetch('https://api.github.com/gists/'+SYNC.gist,{
+    method:'PATCH',
+    headers:Object.assign({'Content-Type':'application/json'},syncHeaders(true)),
+    body:JSON.stringify({files:{'menu.json':{content:JSON.stringify(state)}}})});
+  if(!r.ok)throw new Error('не удалось отправить (HTTP '+r.status+')');
+  try{localStorage.setItem(LS_KEY,JSON.stringify(state));}catch(e){}
+}
+async function syncAuto(){
+  if(!SYNC.gist)return;
+  try{
+    const remote=await gistGet();
+    if((remote.ts||0)>(state.ts||0)){
+      pendingRemote=remote;pendingLabel='облачную';
+      $('#conflictText').innerHTML=
+        `Пока вы отсутствовали, в облаке появилась более свежая версия меню: <b>${fmtTs(remote.ts)}</b>.<br>`+
+        `Ваша локальная версия от <b>${fmtTs(state.ts)}</b>.<br>Загрузить облачную?`;
+      $('#takeRemote').textContent='Загрузить из облака';
+      $('#conflictDialog').showModal();
+    }
+  }catch(e){/* тихо: нет сети или токена только на чтение */}
+}
+function syncStatusText(){
+  $('#syncStatus').textContent=SYNC.gist?('подключено · gist '+SYNC.gist.slice(0,8)+'…'):'не подключено';
+}
+$('#btnSync').addEventListener('click',()=>{
+  $('#inpGist').value=SYNC.gist||'';$('#inpToken').value=SYNC.token||'';
+  syncStatusText();$('#syncDialog').showModal();
+});
+$('#btnSaveSync').addEventListener('click',async()=>{
+  SYNC.gist=$('#inpGist').value.trim();SYNC.token=$('#inpToken').value.trim();saveSync();syncStatusText();
+  if(!SYNC.gist){toast('Укажите ID gist');return;}
+  try{await gistGet();toast('Облако подключено ✓');}
+  catch(e){toast('Проверьте данные: '+e.message);}
+});
+$('#btnPush').addEventListener('click',async()=>{
+  if(!SYNC.gist||!SYNC.token){toast('Нужны ID gist и токен');return;}
+  try{await gistPush();toast('Отправлено в облако ☁');}catch(e){toast(e.message);}
+});
+$('#btnPull').addEventListener('click',async()=>{
+  if(!SYNC.gist){toast('Укажите ID gist');return;}
+  try{const remote=await gistGet();applyRemote(remote);toast('Загружено из облака ☁');}
+  catch(e){toast(e.message);}
+});
+$('#btnMakeLink').addEventListener('click',()=>{
+  if(!SYNC.gist){toast('Сначала подключите облако');return;}
+  if(!location.protocol.startsWith('http')){
+    toast('Ссылка появится, когда страница будет размещена на GitHub Pages (см. инструкцию)');return;
+  }
+  const url=location.origin+location.pathname+'#gist='+encodeURIComponent(SYNC.gist)+'&token='+encodeURIComponent(SYNC.token);
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(()=>toast('Ссылка для семьи скопирована 🔗'),()=>prompt('Скопируйте ссылку:',url));
+  }else prompt('Скопируйте ссылку:',url);
+});
+
+/* ================== ЭКСПОРТ КОПИИ ================== */
+function exportFile(){
+  state.ts=Date.now();
+  try{localStorage.setItem(LS_KEY,JSON.stringify(state));}catch(e){}
+  const clone=document.documentElement.cloneNode(true);
+  clone.querySelectorAll('#embedded-state').forEach(n=>n.remove());
+  clone.querySelectorAll('dialog').forEach(d=>d.removeAttribute('open'));
+  const bg=clone.querySelector('#bgPhoto'); if(bg)bg.removeAttribute('style');
+  const tt=clone.querySelector('#bgTint'); if(tt)tt.removeAttribute('style');
+  const pm=clone.querySelector('#copyMenu'); if(pm)pm.classList.remove('open');
+  const to=clone.querySelector('#toast'); if(to){to.classList.remove('show');to.textContent='';}
+  clone.querySelectorAll('.pop,.leaving').forEach(n=>n.classList.remove('pop','leaving'));
+  const payload='<script id="embedded-state" type="application/json">'
+    +JSON.stringify(state).replace(/</g,'\\u003c')+'</scr'+'ipt>\n';
+  let html='<!DOCTYPE html>\n'+clone.outerHTML;
+  html=html.replace('<body>','<body>\n'+payload);
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const d=new Date();
+  const a=document.createElement('a');
+  a.download=`наше-меню-${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}.html`;
+  a.href=URL.createObjectURL(blob);
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+  toast('Резервная копия сохранена 📤');
+}
+$('#btnExport').addEventListener('click',exportFile);
 
 /* ================== СОБЫТИЯ ================== */
 document.addEventListener('click',e=>{
@@ -743,12 +926,10 @@ document.addEventListener('paste',e=>{
   }
 });
 
-/* переключение недель */
 $('#wkPrev').addEventListener('click',()=>setWeek(offset-1));
 $('#wkNext').addEventListener('click',()=>setWeek(offset+1));
 $('#wkNow').addEventListener('click',()=>setWeek(0));
 
-/* копирование дня */
 function openCopyMenu(btn,src){
   const menu=$('#copyMenu');
   menu.innerHTML='<div class="pm-title">Скопировать в:</div>'+DAY_FULL.map((n,i)=>
@@ -813,10 +994,27 @@ $('#btnSample').addEventListener('click',()=>{
 });
 document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close();}));
 
+$('#takeRemote').addEventListener('click',()=>{
+  applyRemote(pendingRemote);
+  $('#conflictDialog').close();
+  toast(pendingLabel==='облачную'?'Загружено из облака ✓':'Загружена версия из файла ✓');
+  pendingRemote=null;
+});
+$('#keepMine').addEventListener('click',async()=>{
+  $('#conflictDialog').close();
+  if(pendingLabel==='облачную'&&SYNC.token){
+    try{await gistPush();toast('Оставили вашу версию и отправили её в облако ✓');}
+    catch(e){toast('Оставили вашу версию ✓');}
+  }else toast('Оставили вашу версию ✓');
+  pendingRemote=null;
+});
+
 /* запуск */
 renderFamily();
 setWeek(0);
 applyBg();
+syncStatusText();
+syncAuto();
 </script>
 </body>
 </html>
