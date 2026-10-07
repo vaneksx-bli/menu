@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Наше семейное меню — неделя</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Nunito:wght@400;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#43301f; --ink-soft:#8a6a45; --ink-faint:#b08a58;
+    --paper:#fffaf1; --paper-2:#fff4e2; --line:#f0dcc0;
+    --honey:#f2b134; --terra:#d95d24; --herb:#6f8f3f; --berry:#b6455c; --caramel:#a4632a;
+    --shadow:0 12px 32px rgba(122,72,20,.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;overflow-x:hidden}
+  body{
+    font-family:'Nunito',system-ui,sans-serif; color:var(--ink); font-size:16px; line-height:1.5;
+    min-height:100vh; background:#ffe9cd; overflow-x:hidden;
+  }
+  ::selection{background:#ffd98f;color:#3a2716}
+  button{font-family:inherit;cursor:pointer}
+  :focus-visible{outline:3px solid var(--honey);outline-offset:2px;border-radius:6px}
+
+  /* ============ ФОНОВЫЕ СЛОИ ============ */
+  #bgPhoto{
+    position:fixed; top:0; left:0; width:100%; height:100vh; height:100lvh; z-index:0;
+    background-size:cover; background-position:center;
+    background-color:#ffe4c0;
+    background-image:
+      radial-gradient(1100px 700px at 88% -10%, #ffd9a0, transparent 60%),
+      radial-gradient(900px 700px at -10% 110%, #ffedd2, transparent 55%),
+      linear-gradient(160deg,#fff3df,#ffe4c0 55%,#ffdcb0);
+    transform:translateZ(0);
+  }
+  .glow{position:fixed;border-radius:50%;z-index:1;pointer-events:none;opacity:.5;transform:translateZ(0)}
+  .g1{width:44vw;height:44vw;left:-8vw;top:14vh;background:radial-gradient(circle,#ffd48a,transparent 72%);animation:drift 26s ease-in-out infinite alternate}
+  .g2{width:38vw;height:38vw;right:-6vw;bottom:6vh;background:radial-gradient(circle,#ffc09a,transparent 72%);animation:drift 32s ease-in-out infinite alternate-reverse}
+  @keyframes drift{from{transform:translate(0,0)}to{transform:translate(6vw,-7vh)}}
+  #bgTint{
+    position:fixed; top:0; left:0; width:100%; height:100vh; height:100lvh; z-index:2;
+    pointer-events:none; opacity:.6; transform:translateZ(0);
+    background:linear-gradient(180deg, rgba(255,245,228,.94), rgba(255,236,214,.80) 30%, rgba(255,227,198,.9));
+  }
+  .floaters{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:3;pointer-events:none;overflow:hidden}
+  .floaters span{position:absolute;opacity:.13;filter:saturate(.85);animation:floaty ease-in-out infinite alternate}
+  @keyframes floaty{from{transform:translateY(-10px) rotate(-6deg)}to{transform:translateY(12px) rotate(6deg)}}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px;position:relative;z-index:5}
+
+  /* ============ ШАПКА-ДОСКА ============ */
+  .board{
+    position:relative;z-index:5;color:#ffe6b3;
+    background:
+      radial-gradient(circle at 15% -20%, rgba(255,196,96,.22), transparent 55%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.022) 0 2px, transparent 2px 7px),
+      linear-gradient(175deg,#46311f,#33241a);
+    border-bottom:5px solid var(--honey);
+    box-shadow:0 14px 40px rgba(60,35,10,.35);
+  }
+  .board-in{display:flex;flex-wrap:wrap;align-items:center;gap:22px;padding:28px 22px 26px}
+  .board-title{flex:1;min-width:270px}
+  .eyebrow{font-family:'Caveat',cursive;font-size:22px;color:#ffcf7e;letter-spacing:.5px}
+  .board h1{
+    font-family:'Unbounded',sans-serif;font-weight:900;
+    font-size:clamp(26px,3.8vw,42px);line-height:1.12;color:#ffe9bd;
+    text-shadow:0 3px 0 rgba(0,0,0,.18); margin:2px 0 6px;
+  }
+  .board h1 em{font-style:normal;color:var(--honey)}
+  .board .sub{color:#e8c896;font-size:14.5px;font-weight:600}
+  .family{display:flex;flex-wrap:wrap;gap:9px}
+  .fchip{
+    position:relative;display:flex;align-items:center;gap:8px;padding:7px 15px 7px 8px;border-radius:999px;
+    background:rgba(255,255,255,.07);border:1.6px solid var(--c,#ccc);
+    transition:.2s;text-align:left;
+  }
+  .fchip:hover{background:rgba(255,255,255,.16);transform:translateY(-2px)}
+  .fchip::after{content:'💡';position:absolute;top:-9px;right:-7px;font-size:14px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+  .fchip .fe{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:19px;background:rgba(255,236,200,.95);flex-shrink:0}
+  .fchip b{font-size:13.5px;color:#ffe9bd}
+  .fchip i{display:block;font-style:normal;font-size:11px;color:#d9b283;font-weight:600}
+  .pot{position:relative;font-size:46px;margin:0 6px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.3))}
+  .steam{position:absolute;top:-12px;left:50%;width:8px;height:22px;border-radius:8px;background:rgba(255,214,140,.85);filter:blur(3px);animation:steam 2.8s infinite}
+  .steam:nth-child(2){left:36%;animation-delay:.9s}.steam:nth-child(3){left:64%;animation-delay:1.7s}
+  @keyframes steam{0%{transform:translate(-50%,0) scaleY(.5);opacity:0}30%{opacity:.9}100%{transform:translate(calc(-50% + 9px),-36px) scaleY(1.25);opacity:0}}
+  .board-actions{display:flex;gap:9px;flex-wrap:wrap}
+  .board-actions button{
+    border:1.6px solid rgba(255,205,120,.55);background:rgba(255,255,255,.06);color:#ffdf9e;
+    padding:10px 15px;border-radius:13px;font-weight:800;font-size:14px;transition:.2s;
+  }
+  .board-actions button:hover{background:var(--honey);border-color:var(--honey);color:#3a2716;transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.25)}
+
+  /* ============ ПАНЕЛЬ НЕДЕЛИ И ДНЕЙ ============ */
+  .tabsbar{
+    position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);
+    background:rgba(255,248,236,.97);
+    box-shadow:0 6px 20px rgba(122,72,20,.08);
+  }
+  .tabsbar-in{display:flex;align-items:center;gap:10px;padding:12px 22px;max-width:1180px;margin:0 auto}
+  .weeknav{display:flex;align-items:center;gap:6px;flex-shrink:0}
+  .weeknav button{
+    width:34px;height:34px;border-radius:50%;border:1.6px solid #e0c39a;
+    background:rgba(255,255,255,.78);color:#8a6432;font-size:18px;font-weight:800;line-height:1;transition:.18s;
+  }
+  .weeknav button:hover{border-color:var(--terra);color:var(--terra);transform:translateY(-1px)}
+  #wkLabel{min-width:88px;text-align:center;font-weight:800;font-size:13px;color:#6d5233}
+  #wkNow{width:auto!important;border-radius:999px!important;padding:0 12px;font-size:12px!important;
+    background:var(--terra)!important;border-color:var(--terra)!important;color:#fff!important}
+  .tabs-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;flex:1;padding:2px}
+  .tab{
+    display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;white-space:nowrap;
+    border:1.6px solid #e8d2ae;background:rgba(255,255,255,.7);color:#6d5233;transition:.18s;
+  }
+  .tab b{font-weight:800;font-size:14px}
+  .tab i{font-style:normal;font-size:12px;color:var(--ink-faint);font-weight:700}
+  .tab .cnt{min-width:21px;height:21px;border-radius:999px;background:#f6e2c0;color:#8a6432;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 6px}
+  .tab:hover{transform:translateY(-2px);border-color:#d9a869}
+  .tab.active{background:var(--terra);border-color:var(--terra);color:#fff;box-shadow:0 8px 18px rgba(217,93,36,.35)}
+  .tab.active i{color:#ffd9c4}.tab.active .cnt{background:rgba(255,255,255,.25);color:#fff}
+  .today-dot{width:8px;height:8px;border-radius:50%;background:var(--honey);animation:pulse 1.6s ease-in-out infinite}
+  .tab.active .today-dot{background:#fff}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.5}}
+  .week-stat{font-size:13px;font-weight:800;color:var(--ink-soft);white-space:nowrap;padding-right:4px}
+
+  /* ============ ДНИ И КАРТОЧКИ ============ */
+  .day{display:none}
+  .day.active{display:block}
+  .day-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin:30px 0 16px}
+  .day-head h2{font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(20px,2.6vw,29px);color:var(--ink)}
+  .day-head h2::after{content:'';display:block;width:64px;height:5px;border-radius:5px;background:var(--honey);margin-top:6px}
+  .day-date{font-family:'Caveat',cursive;font-size:24px;color:var(--caramel);font-weight:700}
+  .today-badge{font-size:12px;font-weight:800;color:#fff;background:var(--terra);border-radius:999px;padding:4px 11px;vertical-align:middle}
+  .day-tools{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .ghost{
+    border:1.6px dashed #d9b98c;background:rgba(255,255,255,.62);color:#8a6a45;
+    padding:8px 13px;border-radius:11px;font-weight:800;font-size:13px;transition:.18s;
+  }
+  .ghost:hover{border-style:solid;color:var(--terra);background:#fff;transform:translateY(-2px)}
+  .meals{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding-bottom:14px}
+  .meal{
+    background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--mc,var(--honey));
+    border-radius:18px;box-shadow:var(--shadow);transition:transform .22s, box-shadow .22s;
+  }
+  .meal:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(122,72,20,.2)}
+  .day.active .meal{animation:fadeUp .5s both}
+  .day.active .meal:nth-child(2){animation-delay:.07s}
+  .day.active .meal:nth-child(3){animation-delay:.14s}
+  .day.active .meal:nth-child(4){animation-delay:.21s}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  .meal-head{display:flex;align-items:center;gap:11px;padding:15px 17px 11px}
+  .m-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:21px;
+    background:color-mix(in srgb, var(--mc) 16%, #fff);border:1px solid color-mix(in srgb, var(--mc) 34%, #fff)}
+  .meal-head h3{font-family:'Unbounded',sans-serif;font-weight:700;font-size:15px;letter-spacing:.4px}
+  .m-count{margin-left:auto;font-size:12px;font-weight:800;color:var(--ink-faint)}
+  .dishes{padding:2px 17px 4px}
+  .dish{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px dashed #f0dcc0;transition:.2s}
+  .dish:last-child{border-bottom:none}
+  .dish.leaving{opacity:0;transform:translateX(16px)}
+  .dish-dot{width:9px;height:9px;border-radius:50%;background:var(--mc);flex-shrink:0}
+  .dish-name{flex:1;min-width:0;font-weight:700;color:var(--ink);padding-bottom:1px;border-bottom:1.6px dashed transparent;word-break:break-word}
+  .dish-name:focus{outline:none;border-bottom-color:#e0b578}
+  [contenteditable]:empty::before{content:attr(data-ph);color:#cfa97c;font-style:italic;font-weight:600}
+  .who{display:flex;gap:5px;flex-wrap:wrap;flex-shrink:0}
+  .chip{
+    width:33px;height:33px;border-radius:50%;display:grid;place-items:center;font-size:16px;
+    border:2px solid #e6d8c2;background:#f6efe4;filter:grayscale(1);opacity:.4;transition:.18s;padding:0;
+  }
+  .chip:hover{transform:scale(1.12)}
+  .chip.on{filter:none;opacity:1}
+  .chip.pop{animation:pop .3s}
+  @keyframes pop{50%{transform:scale(1.3)}}
+  .chip[data-p="papa"].on{border-color:#d95d24;background:#fdeadd}
+  .chip[data-p="mama"].on{border-color:#b6455c;background:#fbe3e8}
+  .chip[data-p="fedya"].on{border-color:#6f8f3f;background:#eef3df}
+  .chip[data-p="vera"].on{border-color:#e9a13b;background:#fdf0d3}
+  .del{
+    width:26px;height:26px;border-radius:8px;border:none;background:#f3e2c8;color:#a06b3a;
+    font-weight:800;font-size:12px;opacity:0;transition:.18s;flex-shrink:0;
+  }
+  .dish:hover .del{opacity:.8}
+  .del:hover{background:var(--berry);color:#fff;transform:scale(1.1)}
+  .add-dish{
+    width:calc(100% - 34px);margin:8px 17px 4px;padding:9px;border-radius:11px;
+    border:1.7px dashed #dfc096;background:transparent;color:#9a7448;font-weight:800;font-size:13.5px;transition:.18s;
+  }
+  .add-dish:hover{border-style:solid;color:var(--terra);background:#fff6e6;transform:translateY(-1px)}
+  .note{
+    position:relative;margin:12px 17px 18px;padding:11px 15px 13px;transform:rotate(-.5deg);
+    background:linear-gradient(170deg,#fff3ae,#ffe98f);border-radius:5px;
+    box-shadow:0 6px 14px rgba(150,110,20,.18);
+  }
+  .note::before{content:'';position:absolute;top:-9px;left:50%;transform:translateX(-50%) rotate(-2deg);
+    width:72px;height:17px;background:rgba(255,255,255,.55);border:1px dashed rgba(120,90,30,.15);border-radius:2px}
+  .note-tag{font-family:'Caveat',cursive;font-weight:700;font-size:15px;color:#b98a2e;display:block;margin-bottom:-3px}
+  .note-txt{font-family:'Caveat',cursive;font-size:20px;line-height:1.25;color:#6b4a12;display:block;min-height:24px}
+  .note-txt:focus{outline:none}
+
+  .popmenu{
+    position:fixed;z-index:60;background:var(--paper);border:1px solid var(--line);border-radius:13px;
+    box-shadow:0 16px 40px rgba(90,55,15,.28);padding:8px;display:none;flex-direction:column;gap:3px;min-width:185px;
+  }
+  .popmenu.open{display:flex;animation:fadeUp .2s}
+  .popmenu .pm-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-faint);padding:4px 10px}
+  .popmenu button{border:none;background:none;text-align:left;padding:8px 11px;border-radius:9px;font-weight:700;font-size:14px;color:var(--ink)}
+  .popmenu button:hover{background:#fbeed7;color:var(--terra)}
+
+  /* ============ ПОДВАЛ ============ */
+  .footer{padding:36px 22px 64px;text-align:center}
+  .footer .love{font-family:'Caveat',cursive;font-size:25px;color:var(--caramel);margin-bottom:10px}
+
+  /* ============ ДИАЛОГИ ============ */
+  dialog{
+    border:none;border-radius:20px;padding:0;background:var(--paper);max-width:640px;width:calc(100% - 36px);
+    box-shadow:0 30px 80px rgba(60,35,10,.4);color:var(--ink);
+  }
+  dialog::backdrop{background:rgba(62,40,18,.5)}
+  .dlg-head{
+    display:flex;align-items:center;gap:12px;
+    font-family:'Unbounded',sans-serif;font-weight:700;font-size:16px;padding:18px 24px 14px;
+    background:linear-gradient(160deg,#fff0d6,#ffe7c0);border-bottom:1px solid var(--line);border-radius:20px 20px 0 0;
+  }
+  .dlg-head .pava{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:23px;flex-shrink:0;
+    background:#fff;border:2.5px solid var(--c,#ccc)}
+  .dlg-head small{display:block;font-family:'Nunito';font-weight:700;font-size:12px;color:var(--ink-soft)}
+  .dlg-body{padding:18px 24px 24px;max-height:68vh;overflow:auto}
+  .rules{margin-bottom:16px}
+  .rules h4,.grp h4{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--ink-faint);margin-bottom:8px}
+  .rules ul{list-style:none}
+  .rules li{position:relative;padding:0 0 8px 20px;font-size:14.5px}
+  .rules li::before{content:'•';position:absolute;left:4px;color:var(--c,var(--terra));font-weight:900}
+  .rules b{color:var(--c,var(--terra))}
+  .grp{margin-bottom:14px}
+  .pills{display:flex;flex-wrap:wrap;gap:6px}
+  .pill{font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:999px;border:1px solid;line-height:1.35}
+  .grp.ok .pill{background:#eef5e2;border-color:#bcd39a;color:#4c6b2a}
+  .grp.maybe .pill{background:#fdf3d7;border-color:#e8cf8f;color:#8a6420}
+  .grp.no .pill{background:#fbe5e8;border-color:#e5b0ba;color:#96384a}
+  .fine-sm{font-size:12px;color:var(--ink-faint);margin-top:6px;font-weight:600}
+  .drop{
+    display:block;text-align:center;padding:26px 16px;border:2px dashed #dfc096;border-radius:14px;
+    background:#fff8ea;font-weight:800;color:#9a7448;cursor:pointer;transition:.18s;margin-bottom:16px;
+  }
+  .drop:hover{border-color:var(--terra);color:var(--terra);background:#fff3e2}
+  .preview{display:none;text-align:center;margin-bottom:14px}
+  .preview img{max-height:150px;border-radius:12px;box-shadow:var(--shadow);border:4px solid #fff}
+  .sl{display:block;font-weight:800;font-size:14px;color:var(--ink-soft);margin:6px 0 14px}
+  .sl input{width:100%;accent-color:var(--terra);margin-top:8px}
+  .dlg-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+  .primary{background:var(--terra);color:#fff;border:none;border-radius:11px;padding:10px 18px;font-weight:800;font-size:14px;transition:.18s}
+  .primary:hover{background:#bf4e1a;transform:translateY(-2px);box-shadow:0 8px 18px rgba(217,93,36,.35)}
+
+  #toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);opacity:0;z-index:99;
+    background:#3a2716;color:#ffd98f;padding:11px 22px;border-radius:999px;font-weight:800;font-size:14px;
+    box-shadow:0 12px 30px rgba(40,25,8,.4);transition:.3s;pointer-events:none;
+  }
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+
+  @media (max-width:860px){
+    .meals{grid-template-columns:1fr}
+    .board-in{padding:22px}
+  }
+  @media (max-width:560px){
+    .dish{flex-wrap:wrap}
+    .dish-name{flex-basis:100%}
+    .week-stat{display:none}
+    .pot{display:none}
+    #wkLabel{min-width:74px;font-size:12px}
+  }
+  @media (hover:none){ .del{opacity:.55} }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+  }
+
+  /* ============ ПЕЧАТЬ ============ */
+  @media print{
+    @page{margin:12mm}
+    body{background:#fff}
+    #bgPhoto,#bgTint,.glow,.floaters,.no-print,.tabsbar,.day-tools,.add-dish,.del,.footer .love,.footer button{display:none!important}
+    .board{background:#fff;color:var(--ink);border-bottom:3px solid #ccc;box-shadow:none}
+    .board h1{color:var(--ink);text-shadow:none}.board .eyebrow,.board .sub{color:#666}
+    .fchip{border-color:#999;background:#fff}.fchip b{color:#222}.fchip i{color:#666}.fchip::after{display:none}
+    .day{display:block!important;page-break-inside:auto}
+    .meals{grid-template-columns:1fr 1fr;gap:10px}
+    .meal{box-shadow:none;break-inside:avoid}
+    .meal:hover{transform:none}
+    .day-head{margin-top:18px}
+  }
+</style>
+</head>
+<body>
+
+<!-- фоновые слои -->
+<div id="bgPhoto"></div>
+<div class="glow g1"></div><div class="glow g2"></div>
+<div id="bgTint"></div>
+<div class="floaters" aria-hidden="true">
+  <span style="top:12%;left:4%;font-size:52px;animation-duration:14s">🥕</span>
+  <span style="top:34%;left:92%;font-size:44px;animation-duration:18s">🍞</span>
+  <span style="top:64%;left:6%;font-size:46px;animation-duration:16s">🍎</span>
+  <span style="top:82%;left:88%;font-size:50px;animation-duration:13s">🥦</span>
+  <span style="top:20%;left:70%;font-size:38px;animation-duration:19s">🍋</span>
+  <span style="top:76%;left:38%;font-size:40px;animation-duration:15s">🐟</span>
+  <span style="top:50%;left:18%;font-size:36px;animation-duration:17s">🍯</span>
+  <span style="top:8%;left:44%;font-size:34px;animation-duration:20s">🥣</span>
+</div>
+
+<!-- шапка -->
+<header class="board">
+  <div class="board-in wrap">
+    <div class="board-title">
+      <div class="eyebrow" id="weekRange">неделя…</div>
+      <h1>Наше семейное <em>меню</em></h1>
+      <p class="sub">Завтрак · обед · полдник · ужин — спланировано на всю неделю, с заботой о каждом</p>
+    </div>
+    <div class="family" id="family"></div>
+    <div class="pot" aria-hidden="true"><span class="steam"></span><span class="steam"></span><span class="steam"></span>🍲</div>
+    <div class="board-actions no-print">
+      <button id="btnPhoto" title="Сменить фоновую фотографию">📷 Фото</button>
+      <button id="btnPrint" title="Распечатать меню на неделю">🖨 Печать</button>
+    </div>
+  </div>
+</header>
+
+<!-- переключатель недель + вкладки дней -->
+<nav class="tabsbar no-print">
+  <div class="tabsbar-in">
+    <div class="weeknav">
+      <button id="wkPrev" title="Предыдущая неделя" aria-label="Предыдущая неделя">‹</button>
+      <span id="wkLabel">…</span>
+      <button id="wkNext" title="Следующая неделя" aria-label="Следующая неделя">›</button>
+      <button id="wkNow" hidden title="Вернуться к текущей неделе">сейчас</button>
+    </div>
+    <div class="tabs-scroll" id="tabs"></div>
+    <div class="week-stat" id="weekStat"></div>
+  </div>
+</nav>
+
+<main class="wrap">
+  <div id="days"></div>
+</main>
+
+<footer class="footer wrap">
+  <p class="love">Составлено с любовью — для самой лучшей семьи ❤</p>
+  <button class="ghost no-print" id="btnSample">↺ Восстановить примерное меню</button>
+</footer>
+
+<!-- диалог: фото фона -->
+<dialog id="photoDialog">
+  <div class="dlg-head"><span class="pava" style="--c:#f2b134">📷</span><span>Фон страницы — наша фотография</span></div>
+  <div class="dlg-body">
+    <label class="drop" for="fileIn">🖼 Выберите семейное фото…<br><small style="font-weight:600;color:#b08a58">JPG или PNG, сохранится только на этом устройстве</small>
+      <input type="file" id="fileIn" accept="image/*" hidden>
+    </label>
+    <div class="preview"><img id="prevImg" alt="Текущее фоновое фото"></div>
+    <label class="sl">Мягкость фона (тёплая вуаль поверх фото)
+      <input type="range" id="tintRange" min="20" max="90" value="60">
+    </label>
+    <div class="dlg-actions">
+      <button class="ghost" id="removePhoto">Убрать фото</button>
+      <button class="primary" id="closePhoto">Готово</button>
+    </div>
+    <p class="fine-sm">Подсказка: фото остаётся за тёплой медовой вуалью, чтобы текст меню всегда был читаемым.</p>
+  </div>
+</dialog>
+
+<!-- диалог: памятка члена семьи -->
+<dialog id="personDialog">
+  <div class="dlg-head" id="personHead"></div>
+  <div class="dlg-body" id="personBody"></div>
+</dialog>
+
+<div id="copyMenu" class="popmenu"></div>
+<div id="toast"></div>
+
+<script>
+/* ================== ДАННЫЕ ================== */
+const PEOPLE=[
+  {id:'papa', name:'Папа', emoji:'👨', color:'#d95d24', note:'бережём печень, держим курс на лёгкость'},
+  {id:'mama', name:'Мама', emoji:'👩', color:'#b6455c', note:'щадящий режим для желудка'},
+  {id:'fedya',name:'Федя', emoji:'🧒', color:'#6f8f3f', note:'растёт — нужны сытные обеды'},
+  {id:'vera', name:'Вера', emoji:'👶', color:'#e9a13b', note:'отдельно, без соли и сахара, пюрируем'}
+];
+
+/* -------- персональные памятки: правила + продукты по приоритетам -------- */
+const PERSON_TIPS={
+ papa:{
+  tagline:'Памятка: печень + курс на лёгкость',
+  rules:[
+   '<b>Готовим:</b> варим, тушим, на пару, запекаем без добавленного жира. Жарка и фритюр — пауза, пока печёночные показатели не придут в норму.',
+   '<b>Алкоголь — ноль:</b> печень восстанавливается только при полном отказе, включая «праздничные» бокалы.',
+   '<b>Тарелка для снижения веса:</b> половина — овощи (тушёные, запечённые, салат с маслом), четверть — белок (рыба, птица, творог), четверть — гарнир (каша, картофель, макароны). Порция — примерно с кулак.',
+   '<b>Режим:</b> 4–5 приёмов пищи без переедания; ужин лёгкий, за 3 часа до сна; ночной «поход к холодильнику» заменяем кефиром или овощами.',
+   '<b>Сладкие напитки — минимум:</b> сахар, соки и газировка — главные виновники жира в печени; чай и вода — без сахара.',
+   '<b>Жиры:</b> сало, жирное мясо, майонез — редко; сливочное масло до 15–20 г в день, основной жир — растительное масло.',
+   '<b>Вода:</b> около 2 литров в день, если врач не ограничивал.'
+  ],
+  gt:['✅ Рекомендовано','🟡 Возможно — понемногу','⛔ Не желательно'],
+  ok:['овощи в любом виде, кроме жареных','салаты с растительным маслом','гречка, овсянка, пшёнка, перловка, булгур','индейка, курица, кролик, постная говядина','рыба 2–3 раза в неделю (включая жирную — омега-3)','творог до 5%','кефир, ряженка, натуральный йогурт','неострый сыр','омлет и яйца всмятку','фрукты и ягоды некислые','цельнозерновой и подсушенный белый хлеб','растительные масла','орехи несолёные, горсть','чай, вода, компоты без сахара'],
+  maybe:['макароны твёрдых сортов','картофель отварной и запечённый','сметана 15% в блюда','неострый твёрдый сыр','мёд и сладости — до 2–3 ч. л. в день','кофе 1–2 чашки с молоком, не натощак','варёная колбаса — редко','домашняя пицца и бургер — иногда'],
+  no:['алкоголь в любом виде','жареное и фритюр','жирное мясо (свинина, утка, баранина)','сало и копчёности','майонез и жирные соусы','фастфуд, чипсы, солёные снеки','сладкая газировка и пакетированные соки','свежая белая выпечка, торты','крепкие бульоны, окрошка с колбасой','консервы и разносолы (избыток соли)','трансжиры: маргарин, магазинная сдоба']
+ },
+ mama:{
+  tagline:'Памятка: щадящий режим для желудка и желчного',
+  rules:[
+   '<b>Температура:</b> еда приятно тёплая (примерно 35–45 °C). Суп и чай после кипячения остужаем; ничего обжигающего, ничего ледяного и «straight из холодильника», мороженое — пауза.',
+   '<b>Частота:</b> 5–6 раз в день небольшими порциями (250–300 мл), примерно в одно время, перерывы не больше 3,5–4 часов. При дискинезии по гипомоторному типу регулярная еда + ложка растительного масла в блюдо — лучшая помощь желчеоттоку.',
+   '<b>Кислое — пауза, пока заживают эрозии:</b> цитрусовые и их соки, киви, ананас, гранат, кислые яблоки и сливы, клюква и смородина, помидоры и томатная паста, квашеная капуста и соленья, квасс и уксус в заправках.',
+   '<b>Грубая клетчатка — ограничить:</b> сырая белокочанная капуста, редис и редька, болгарский перец и огурцы с грубой кожицей, грибы, бобовые (фасоль, горох, чечевица), кукуруза, отруби и чёрный хлеб с отрубями, орехи и семечки, кожица яблок и винограда, грубая курага и чернослив. Овощи — варёные, тушёные, запечённые; фрукты — печёные или мягкие, без кожи.',
+   '<b>Острое — убрать:</b> чили, хрен, горчица, аджика, острые соусы; сырой чеснок и лук — по минимуму, в блюдах варёными — можно.',
+   '<b>Кофе (латте):</b> не натощак! Лучшее время — через 30–40 минут после тёплого завтрака (овсянка, запеканка). До 1 чашки в день (200–250 мл), тёплый, не обжигающий. Латте с молоком — самый щадящий кофейный вариант для желудка, выбор отличный.',
+   '<b>Когда кофе лучше пропустить:</b> сразу после кислого (цитрус, кислые ягоды, помидоры) — раздражение суммируется; и 1–1,5 часа после мясных и железистых блюд (говядина, гречка с печенью) — кофе мешает усвоению железа. Вечером заменяем на цикорий или тёплое молоко.',
+   '<b>Питьё:</b> негазированная тёплая вода около 1,5 л в день — достаточно жидкости важно и при повышенных тромбоцитах (кровь не должна сгущаться).'
+  ],
+  gt:['✅ Рекомендовано','🟡 Возможно — немного и не каждый день','⛔ Не желательно'],
+  ok:['протёртые овсяная, рисовая, манная каши','слизистые и овощные крем-супы','супы на втором бульоне','индейка и курица на пару','кролик','постная говядина отварная','треска, минтай, хек, судак на пару','паровой омлет','свежий некислый творог','молоко и сливки в блюдах','ряженка и свежий кефир','неострый сыр','картофель, кабачок, тыква, морковь отварные и запечённые','цветная капуста и брокколи','свёкла хорошо вываренная','печёные яблоки','спелые бананы','печёная груша без кожи','кисели и компоты','белый хлеб вчерашний, сухарики, галеты','сливочное масло до 20 г в день','растительное масло 1–2 ст. л. в блюда','слабый тёплый чай','латте после завтрака','тёплая негазированная вода'],
+  maybe:['макароны','сладкий помидор без кожи, 1–2 ломтика, не натощак','спелые персики и абрикосы без кожи','мёд и варенье — немного','адыгейский сыр, моцарелла','сметана в блюда','зефир, мармелад, пастила — понемногу','латте 1 чашка в день после завтрака','варёная колбаса — редко'],
+  no:['жареное и жирное','копчёности и консервы','крепкие мясные и грибные бульоны','цитрусовые, киви, ананас, кислые соки','помидоры натощак, томатная паста, кетчуп','квашеная капуста, соленья, маринады, уксус','сырая капуста, редис, редька, грибы, бобовые, кукуруза','отруби и свежий чёрный хлеб','свежая сдоба и слоёное тесто','шоколад и какао натощак','газировка и квас','чили, хрен, горчица, аджика','очень горячее и ледяное, мороженое','кофе натощак и вечером','алкоголь']
+ },
+ fedya:{
+  tagline:'Памятка: топливо для роста и школы',
+  rules:[
+   '<b>Режим:</b> 4–5 приёмов пищи; завтрак перед школой и горячий обед — обязательно.',
+   '<b>Энергия:</b> каждый день сложные углеводы (каши, макароны, картофель, хлеб) + белок (мясо, рыба, яйцо, молочка).',
+   '<b>Овощи и фрукты:</b> 3–4 «цвета» в день — в суп, гарнир и как перекус.',
+   '<b>Перекус правильно:</b> яблоко + горсть орехов, творожный стаканчик, бутерброд с сыром — вместо чипсов и печенья с соком.',
+   '<b>Сладкое:</b> после основной еды, а не вместо неё; газировка и чипсы — формат «праздник».',
+   '<b>Питьё:</b> вода и компоты вместо сладких напитков.'
+  ],
+  gt:['✅ Рекомендовано','🟡 Возможно — понемногу','⛔ Не желательно'],
+  ok:['каши и крупы','макароны, картофель, хлеб','мясо, птица, рыба каждый день','яйца','молоко, кефир, творог, сыр','овощи, фрукты, ягоды 3–4 раза в день','сливочное и растительное масло','орехи и сухофрукты на перекус','мёд','домашние супы и борщи','вода и компоты'],
+  maybe:['сладости и шоколад после еды — немного','домашняя пицца и бургер','магазинные сосиски — редко','пакетированный сок — полстакана, редко','газировка и чипсы — только по праздникам'],
+  no:['энергетики','много газировки и сладких соков','чипсы, сухарики, конфеты вместо еды','глазированные сладкие хлопья каждый день','фастфуд несколько раз в неделю','еда «на бегу» без горячего']
+ },
+ vera:{
+  tagline:'Памятка: отдельная кастрюлька, всё пюрируем',
+  rules:[
+   '<b>Без соли и сахара:</b> порцию из общей кастрюли откладываем до соления; вкус — натуральный.',
+   '<b>Консистенция по возрасту:</b> пюре → мелко рубленое → мягкие кусочки; новые текстуры вводимо постепенно.',
+   '<b>Новый продукт:</b> по одному, 3–5 дней, в первой половине дня — следим за кожей и животиком.',
+   '<b>Опасно (подавиться/аллергия):</b> целые орехи и виноградины, попкорн, мёд до года, коровье молоко как напиток до года (кисломолочка — можно).',
+   '<b>Температура:</b> всегда пробуем сами — еда тёплая, не горячая.',
+   '<b>Режим:</b> 5 приёмов пищи + грудное молоко или смесь по требованию.'
+  ],
+  gt:['✅ Уже можно','🟡 Осторожно, понемногу','⛔ Пока нельзя'],
+  ok:['кабачок, цветная капуста, брокколи','картофель, морковь, тыква','каши: гречневая, рисовая, кукурузная, овсяная','фруктовые пюре: яблоко, груша, банан','мясные пюре: индейка, кролик, курица','омлет и желток','детский кефир и творожок','сливочное и растительное масло чуть-чуть','детское печенье и хлеб','вода'],
+  maybe:['белая рыба — следить за реакцией','светлые ягоды протёртые','макароны твёрдых сортов','детское печенье','компот из сухофруктов без сахара','мягкий сыр'],
+  no:['соль и сахар','мёд до года','целые орехи, виноград, попкорн','коровье молоко как напиток до года','сосиски и копчёности','взрослые консервы и соусы','пакетированные соки и сладкие напитки','шоколад и какао','жареное и жирное','всё солёное и острое с общего стола']
+ }
+};
+
+const ALL=['papa','mama','fedya','vera'];
+const MEALS=[
+  {id:'breakfast',name:'Завтрак', icon:'🍳',color:'#f2b134'},
+  {id:'lunch',    name:'Обед',    icon:'🍲',color:'#d95d24'},
+  {id:'snack',    name:'Полдник', icon:'🍎',color:'#6f8f3f'},
+  {id:'dinner',   name:'Ужин',    icon:'🌙',color:'#b6455c'}
+];
+const DAY_FULL=['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
+const DAY_SHORT=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+const MGEN=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const MSHORT=['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+const D=(name,who)=>({name,who:who.slice()});
+const mk=(breakfast,lunch,snack,dinner)=>({breakfast,lunch,snack,dinner});
+const emptyMeal=()=>({dishes:[],note:''});
+const emptyWeek=()=>Array.from({length:7},()=>({meals:mk(emptyMeal(),emptyMeal(),emptyMeal(),emptyMeal())}));
+
+function defaultWeek(){return[
+ {meals:mk(
+  {dishes:[D('Овсяная каша с печёным яблоком',ALL),D('Какао на молоке',['papa','mama','fedya'])],
+   note:'Вере: кашу размять на воде, яблоко — без кожуры, в виде пюре.'},
+  {dishes:[D('Крем-суп из кабачка и картофеля',ALL),D('Паровые тефтели из индейки',['papa','mama','fedya'])],
+   note:'Вере: суп пюрировать без сливок, тефтельку хорошо размять вилкой.'},
+  {dishes:[D('Печёное яблоко с творогом',ALL)],note:''},
+  {dishes:[D('Треска, запечённая с морковью',['papa','mama','fedya']),D('Рис отварной',ALL)],
+   note:'Вере: треску отварить отдельно и размять с рисом.'})},
+ {meals:mk(
+  {dishes:[D('Пшённая каша с тыквой',ALL)],note:'Вере: пшёнку хорошо разварить, тыкву размять.'},
+  {dishes:[D('Лёгкий куриный суп с лапшой',['papa','mama','fedya']),D('Подсушенный белый хлеб',ALL)],
+   note:'Вере: овощной отвар и размятые овощи из супа.'},
+  {dishes:[D('Банан и детский творожок',ALL)],note:''},
+  {dishes:[D('Отварная говядина с гречкой',['papa','mama','fedya']),D('Тушёная морковь',['papa','fedya','vera'])],
+   note:'Вере: говядину провернуть дважды, гречку — вязкую.'})},
+ {meals:mk(
+  {dishes:[D('Творожная запеканка со сметаной (в духовке)',ALL)],note:'Вере: серединку запеканки, без корочки.'},
+  {dishes:[D('Борщ без зажарки, со сметаной',['papa','mama','fedya']),D('Подсушенный белый хлеб',ALL)],
+   note:'Вере: только хорошо вываренные овощи, чуть-чуть — смотреть реакцию.'},
+  {dishes:[D('Домашний кисель с галетным печеньем',['papa','mama','fedya'])],note:'Вере: фруктовое пюре.'},
+  {dishes:[D('Рыбные котлеты на пару',ALL),D('Картофельное пюре',ALL)],note:''})},
+ {meals:mk(
+  {dishes:[D('Рисовая каша с курагой',ALL)],note:'Вере: курагу хорошо разварить и измельчить.'},
+  {dishes:[D('Суп с индейкой, овощами и рисом',ALL)],note:'Вере: порцию отложить до соления и размять.'},
+  {dishes:[D('Творожное суфле',ALL)],note:''},
+  {dishes:[D('Картофельная запеканка с отварной курицей',['papa','mama','fedya']),D('Отварная свёкла с маслом',['papa','mama'])],
+   note:'Вере: запеканку размять с овощами.'})},
+ {meals:mk(
+  {dishes:[D('Гречневая каша пополам с молоком',ALL)],note:'Вере: гречку на воде, без сахара.'},
+  {dishes:[D('Овощной крем-суп с сухариками',ALL)],note:''},
+  {dishes:[D('Кефир и галетное печенье',['papa','mama','fedya'])],note:'Вере: фруктовое пюре.'},
+  {dishes:[D('Паровые биточки из говядины',['papa','mama','fedya']),D('Макароны отварные',ALL)],
+   note:'Вере: биточек размять, макароны — мелкие.'})},
+ {meals:mk(
+  {dishes:[D('Сырники в духовке с йогуртом',ALL)],note:'Вере: сырник без корочки, с фруктовым пюре.'},
+  {dishes:[D('Куриный суп с рисом и яйцом',ALL)],note:''},
+  {dishes:[D('Пюре банан–яблоко',ALL)],note:''},
+  {dishes:[D('Рыба на пару с тушёными овощами',ALL)],note:'Вере: овощи размять вилкой.'})},
+ {meals:mk(
+  {dishes:[D('Паровой омлет с брокколи',['papa','mama','fedya']),D('Тост с сыром',['papa','mama','fedya'])],
+   note:'Вере: желток и брокколи размять.'},
+  {dishes:[D('Суп с фрикадельками и овощами',ALL)],note:'Вере: фрикадельку размять, овощи пюрировать.'},
+  {dishes:[D('Домашняя шарлотка с яблоками',['papa','mama','fedya'])],note:'Вере: печёное яблоко без сахара.'},
+  {dishes:[D('Ленивые голубцы с индейкой (тушёные)',['papa','mama','fedya'])],
+   note:'Вере: капусту тушить дольше, порция небольшая.'})}
+];}
+
+/* ================== СОСТОЯНИЕ И НЕДЕЛИ ================== */
+const LS_KEY='familyMenuBoard.v2';
+const todayIdx=(new Date().getDay()+6)%7;
+const pad=n=>String(n).padStart(2,'0');
+const keyOf=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const mondayDate=off=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-todayIdx+off*7);return d;};
+
+let state;
+const curKey=keyOf(mondayDate(0));
+try{
+  const saved=JSON.parse(localStorage.getItem(LS_KEY)||localStorage.getItem('familyMenuBoard.v1'));
+  if(saved&&saved.weeks){state=saved;}
+  else if(saved&&saved.week){state={weeks:{[curKey]:saved.week},tint:saved.tint??0.6,photo:saved.photo??null};}
+  else state=null;
+}catch(e){state=null;}
+if(!state)state={weeks:{},tint:.6,photo:null};
+if(!state.weeks[curKey])state.weeks[curKey]=defaultWeek();
+
+let offset=0;
+let WK=state.weeks[curKey];
+let activeDay=todayIdx, saveTimer=null, toastTimer=null;
+
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const dateFor=i=>{const d=mondayDate(offset);d.setDate(d.getDate()+i);return d;};
+const fmtDate=d=>`${d.getDate()} ${MGEN[d.getMonth()]}`;
+function plural(n){const w=(n%10===1&&n%100!==11)?'блюдо':(n%10>=2&&n%10<=4&&(n%100<12||n%100>14))?'блюда':'блюд';return `${n} ${w}`;}
+
+/* ================== РЕНДЕР ================== */
+function renderFamily(){
+  $('#family').innerHTML=PEOPLE.map(p=>`
+    <button class="fchip" style="--c:${p.color}" data-p="${p.id}" title="${p.name}: нажмите — памятка по питанию">
+      <span class="fe">${p.emoji}</span><span><b>${p.name}</b><i>${p.note}</i></span>
+    </button>`).join('');
+  $$('.fchip').forEach(b=>b.addEventListener('click',()=>openPerson(b.dataset.p)));
+}
+function openPerson(id){
+  const p=PEOPLE.find(x=>x.id===id), t=PERSON_TIPS[id];
+  $('#personHead').style.setProperty('--c',p.color);
+  $('#personHead').innerHTML=`<span class="pava" style="--c:${p.color}">${p.emoji}</span>
+    <span>${p.name}<small>${t.tagline}</small></span>`;
+  $('#personBody').style.setProperty('--c',p.color);
+  $('#personBody').innerHTML=`
+    <div class="rules"><h4>Правила</h4><ul>${t.rules.map(r=>`<li>${r}</li>`).join('')}</ul></div>
+    ${[['ok',t.gt[0]],['maybe',t.gt[1]],['no',t.gt[2]]].map(([k,title])=>`
+      <div class="grp ${k}"><h4>${title}</h4>
+        <div class="pills">${t[k].map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+      </div>`).join('')}
+    <p class="fine-sm">Семейная шпаргалка по принципам щадящего питания (стоły №1 и №5 как основа); сомнения по конкретным продуктам — сверяем с врачом.</p>`;
+  $('#personDialog').showModal();
+}
+function renderWeekRange(){
+  const a=dateFor(0),b=dateFor(6);
+  const txt=a.getMonth()===b.getMonth()
+    ?`${a.getDate()}–${b.getDate()} ${MGEN[a.getMonth()]} ${b.getFullYear()}`
+    :`${a.getDate()} ${MGEN[a.getMonth()]} – ${b.getDate()} ${MGEN[b.getMonth()]} ${b.getFullYear()}`;
+  const suf=offset>0?' · планируем заранее':offset<0?' · прошедшая неделя':' · планируем с любовью';
+  $('#weekRange').textContent=`неделя ${txt}${suf}`;
+}
+function updateWeekNav(){
+  const a=dateFor(0),b=dateFor(6);
+  $('#wkLabel').textContent=a.getMonth()===b.getMonth()
+    ?`${a.getDate()}–${b.getDate()} ${MSHORT[a.getMonth()]}`
+    :`${a.getDate()} ${MSHORT[a.getMonth()]} – ${b.getDate()} ${MSHORT[b.getMonth()]}`;
+  $('#wkNow').hidden=offset===0;
+}
+function renderTabs(){
+  $('#tabs').innerHTML=DAY_SHORT.map((s,i)=>{
+    const d=dateFor(i);
+    const isToday=offset===0&&i===todayIdx;
+    return `<button class="tab" data-day="${i}" title="${DAY_FULL[i]}">
+      ${isToday?'<span class="today-dot"></span>':''}
+      <b>${s}</b><i>${d.getDate()} ${MGEN[d.getMonth()]}</i><span class="cnt">0</span>
+    </button>`;
+  }).join('');
+  $$('.tab').forEach(t=>t.addEventListener('click',()=>showDay(+t.dataset.day)));
+}
+function dishHTML(i,mid,k,dish){
+  return `<div class="dish">
+    <span class="dish-dot"></span>
+    <span class="dish-name" contenteditable="true" data-ph="название блюда…" data-d="${i}" data-m="${mid}" data-i="${k}">${esc(dish.name)}</span>
+    <div class="who">${PEOPLE.map(p=>`<button class="chip ${dish.who.includes(p.id)?'on':''}" data-p="${p.id}" data-d="${i}" data-m="${mid}" data-i="${k}" title="Для кого: ${p.name}" aria-label="${p.name}">${p.emoji}</button>`).join('')}</div>
+    <button class="del no-print" data-d="${i}" data-m="${mid}" data-i="${k}" title="Убрать блюдо">✕</button>
+  </div>`;
+}
+function mealHTML(i,m,md){
+  return `<article class="meal" style="--mc:${m.color}">
+    <header class="meal-head">
+      <span class="m-icon">${m.icon}</span><h3>${m.name}</h3>
+      <span class="m-count" id="mc-${i}-${m.id}">${plural(md.dishes.length)}</span>
+    </header>
+    <div class="dishes" id="dishes-${i}-${m.id}">${md.dishes.map((d,k)=>dishHTML(i,m.id,k,d)).join('')}</div>
+    <button class="add-dish no-print" data-d="${i}" data-m="${m.id}">+ добавить блюдо</button>
+    <div class="note"><span class="note-tag">заметка ✎</span>
+      <span class="note-txt" contenteditable="true" data-ph="например: Вере — размять без соли…" data-d="${i}" data-m="${m.id}">${esc(md.note)}</span>
+    </div>
+  </article>`;
+}
+function dayHTML(i){
+  const day=WK[i],d=dateFor(i);
+  const isToday=offset===0&&i===todayIdx;
+  return `<section class="day ${i===activeDay?'active':''}" data-day="${i}">
+    <div class="day-head">
+      <h2>${DAY_FULL[i]}</h2>
+      <span class="day-date">${fmtDate(d)}</span>
+      ${isToday?'<span class="today-badge">сегодня</span>':''}
+      <div class="day-tools no-print">
+        <button class="ghost copyBtn" data-day="${i}">📋 Скопировать день…</button>
+        <button class="ghost clearBtn" data-day="${i}">🧹 Очистить день</button>
+      </div>
+    </div>
+    <div class="meals">${MEALS.map(m=>mealHTML(i,m,day.meals[m.id])).join('')}</div>
+  </section>`;
+}
+function renderAllDays(){ $('#days').innerHTML=WK.map((_,i)=>dayHTML(i)).join(''); updateCounts(); }
+function rebuildDay(i){
+  const el=$(`.day[data-day="${i}"]`); if(el) el.outerHTML=dayHTML(i);
+}
+function refreshMeal(i,mid){
+  const md=WK[i].meals[mid];
+  const holder=$(`#dishes-${i}-${mid}`); if(!holder)return;
+  holder.innerHTML=md.dishes.map((d,k)=>dishHTML(i,mid,k,d)).join('');
+  const c=$(`#mc-${i}-${mid}`); if(c)c.textContent=plural(md.dishes.length);
+  updateCounts();
+}
+function updateCounts(){
+  let total=0;
+  $$('.tab').forEach(t=>{
+    const i=+t.dataset.day;
+    const n=Object.keys(WK[i].meals).reduce((s,m)=>s+WK[i].meals[m].dishes.length,0);
+    total+=n; t.querySelector('.cnt').textContent=n;
+  });
+  $('#weekStat').textContent=`за неделю: ${total} ${plural(total).split(' ')[1]}`;
+}
+function showDay(i){
+  activeDay=i;
+  $$('.tab').forEach(t=>t.classList.toggle('active',+t.dataset.day===i));
+  $$('.day').forEach(d=>d.classList.toggle('active',+d.dataset.day===i));
+}
+function setWeek(off){
+  offset=off;
+  const k=keyOf(mondayDate(offset));
+  if(!state.weeks[k])state.weeks[k]=emptyWeek();
+  WK=state.weeks[k];
+  renderWeekRange();updateWeekNav();renderTabs();renderAllDays();showDay(activeDay);save();
+}
+
+/* ================== СОХРАНЕНИЕ ================== */
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    try{localStorage.setItem(LS_KEY,JSON.stringify(state));}
+    catch(e){try{localStorage.setItem(LS_KEY,JSON.stringify({...state,photo:null}));}catch(e2){}}
+  },400);
+}
+function toast(msg){
+  const t=$('#toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+/* ================== СОБЫТИЯ ================== */
+document.addEventListener('click',e=>{
+  const chip=e.target.closest('.chip');
+  if(chip){
+    const {d,m,i}=chip.dataset,p=chip.dataset.p;
+    const dish=WK[d].meals[m].dishes[i];
+    const idx=dish.who.indexOf(p);
+    idx>-1?dish.who.splice(idx,1):dish.who.push(p);
+    chip.classList.toggle('on');chip.classList.add('pop');
+    setTimeout(()=>chip.classList.remove('pop'),300);
+    save();return;
+  }
+  const del=e.target.closest('.del');
+  if(del){
+    const row=del.closest('.dish');row.classList.add('leaving');
+    setTimeout(()=>{
+      const {d,m,i}=del.dataset;
+      WK[d].meals[m].dishes.splice(+i,1);
+      refreshMeal(+d,m);save();
+    },200);return;
+  }
+  const add=e.target.closest('.add-dish');
+  if(add){
+    const d=+add.dataset.d,m=add.dataset.m;
+    WK[d].meals[m].dishes.push({name:'',who:ALL.slice()});
+    refreshMeal(d,m);save();
+    const holder=$(`#dishes-${d}-${m}`);
+    const last=holder.querySelector('.dish:last-child .dish-name');
+    if(last)last.focus();
+    return;
+  }
+  const cb=e.target.closest('.copyBtn');
+  if(cb){e.stopPropagation();openCopyMenu(cb,+cb.dataset.day);return;}
+  const cl=e.target.closest('.clearBtn');
+  if(cl){
+    const i=+cl.dataset.day;
+    if(confirm(`Очистить ${DAY_FULL[i].toLowerCase()}? Все блюда дня будут удалены.`)){
+      MEALS.forEach(m=>{WK[i].meals[m.id]=emptyMeal();});
+      rebuildDay(i);save();toast('День очищен 🧹');
+    }return;
+  }
+  if(!e.target.closest('#copyMenu')) $('#copyMenu').classList.remove('open');
+});
+
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.classList.contains('dish-name')){
+    const md=WK[t.dataset.d].meals[t.dataset.m].dishes[+t.dataset.i];
+    md.name=t.textContent;
+    if(t.textContent.trim()===''&&t.innerHTML!==''){t.innerHTML='';}
+    save();
+  }else if(t.classList.contains('note-txt')){
+    WK[t.dataset.d].meals[t.dataset.m].note=t.textContent;
+    save();
+  }
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.classList.contains('dish-name')){e.preventDefault();e.target.blur();}
+});
+document.addEventListener('paste',e=>{
+  const t=e.target;
+  if(t.classList&&(t.classList.contains('dish-name')||t.classList.contains('note-txt'))){
+    e.preventDefault();
+    document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text'));
+  }
+});
+
+/* переключение недель */
+$('#wkPrev').addEventListener('click',()=>setWeek(offset-1));
+$('#wkNext').addEventListener('click',()=>setWeek(offset+1));
+$('#wkNow').addEventListener('click',()=>setWeek(0));
+
+/* копирование дня */
+function openCopyMenu(btn,src){
+  const menu=$('#copyMenu');
+  menu.innerHTML='<div class="pm-title">Скопировать в:</div>'+DAY_FULL.map((n,i)=>
+    i===src?'':`<button data-t="${i}">${n} · ${fmtDate(dateFor(i))}</button>`).join('');
+  const r=btn.getBoundingClientRect();
+  menu.style.left=Math.min(r.left,window.innerWidth-210)+'px';
+  menu.style.top=(r.bottom+6)+'px';
+  menu.classList.add('open');
+  menu.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    const t=+b.dataset.t;
+    WK[t].meals=JSON.parse(JSON.stringify(WK[src].meals));
+    if(t===activeDay)rebuildDay(t);
+    save();updateCounts();menu.classList.remove('open');
+    toast(`Скопировано: ${DAY_FULL[src]} → ${DAY_FULL[t]} ✓`);
+  }));
+}
+
+/* ================== ФОН-ФОТО ================== */
+function applyBg(){
+  const bg=$('#bgPhoto');
+  if(state.photo){bg.style.backgroundImage=`url(${state.photo})`;bg.style.backgroundColor='#e8c9a0';}
+  else{bg.style.backgroundImage='';bg.style.backgroundColor='';}
+  $('#bgTint').style.opacity=state.tint;
+}
+$('#btnPhoto').addEventListener('click',()=>{
+  const p=$('#prevImg').parentElement;
+  if(state.photo){$('#prevImg').src=state.photo;p.style.display='block';}else p.style.display='none';
+  $('#tintRange').value=Math.round(state.tint*100);
+  $('#photoDialog').showModal();
+});
+$('#closePhoto').addEventListener('click',()=>$('#photoDialog').close());
+$('#removePhoto').addEventListener('click',()=>{
+  state.photo=null;applyBg();save();
+  $('#prevImg').parentElement.style.display='none';toast('Фото фона убрано');
+});
+$('#tintRange').addEventListener('input',e=>{state.tint=e.target.value/100;applyBg();save();});
+$('#fileIn').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const img=new Image(),url=URL.createObjectURL(f);
+  img.onload=()=>{
+    const max=1400,scale=Math.min(1,max/Math.max(img.width,img.height));
+    const c=document.createElement('canvas');
+    c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    state.photo=c.toDataURL('image/jpeg',.82);
+    URL.revokeObjectURL(url);
+    applyBg();save();
+    $('#prevImg').src=state.photo;$('#prevImg').parentElement.style.display='block';
+    toast('Фото установлено 📷');
+  };
+  img.src=url;e.target.value='';
+});
+
+/* ================== ПРОЧЕЕ ================== */
+$('#btnPrint').addEventListener('click',()=>window.print());
+$('#btnSample').addEventListener('click',()=>{
+  if(confirm('Заполнить эту неделю примерным меню? Текущие блюда недели будут заменены.')){
+    const k=keyOf(mondayDate(offset));
+    state.weeks[k]=defaultWeek();WK=state.weeks[k];
+    renderAllDays();showDay(activeDay);save();toast('Примерное меню восстановлено ↺');
+  }
+});
+document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close();}));
+
+/* запуск */
+renderFamily();
+setWeek(0);
+applyBg();
+</script>
+</body>
+</html>
