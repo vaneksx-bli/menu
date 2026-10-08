@@ -49,6 +49,7 @@
   @keyframes floaty{from{transform:translateY(-10px) rotate(-6deg)}to{transform:translateY(12px) rotate(6deg)}}
 
   .wrap{max-width:1180px;margin:0 auto;padding:0 22px;position:relative;z-index:5}
+  #printTitle{display:none}
 
   /* ============ ШАПКА-ДОСКА ============ */
   .board{
@@ -92,6 +93,8 @@
   }
   .board-actions button:hover{background:var(--honey);border-color:var(--honey);color:#3a2716;transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.25)}
   .board-actions button.hot{border-color:var(--honey);background:rgba(242,177,52,.16)}
+  .bcount{margin-left:6px;min-width:18px;height:18px;border-radius:999px;background:var(--terra);color:#fff;
+    font-size:11px;font-weight:800;display:inline-grid;place-items:center;padding:0 5px;vertical-align:1px}
 
   /* ============ ПАНЕЛЬ НЕДЕЛИ И ДНЕЙ ============ */
   .tabsbar{
@@ -139,6 +142,7 @@
     padding:8px 13px;border-radius:11px;font-weight:800;font-size:13px;transition:.18s;
   }
   .ghost:hover{border-style:solid;color:var(--terra);background:#fff;transform:translateY(-2px)}
+  .ghost.mini{padding:5px 9px;font-size:12px;border-radius:9px}
   .meals{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding-bottom:14px}
   .meal{
     background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--mc,var(--honey));
@@ -163,6 +167,11 @@
   .dish-name{flex:1;min-width:0;font-weight:700;color:var(--ink);padding-bottom:1px;border-bottom:1.6px dashed transparent;word-break:break-word}
   .dish-name:focus{outline:none;border-bottom-color:#e0b578}
   [contenteditable]:empty::before{content:attr(data-ph);color:#cfa97c;font-style:italic;font-weight:600}
+  .vid{
+    width:28px;height:28px;border-radius:9px;border:none;background:#fdeadd;color:var(--terra);
+    font-size:14px;display:grid;place-items:center;transition:.18s;flex-shrink:0;text-decoration:none;
+  }
+  .vid:hover{background:var(--terra);color:#fff;transform:scale(1.1)}
   .who{display:flex;gap:5px;flex-wrap:wrap;flex-shrink:0}
   .chip{
     width:33px;height:33px;border-radius:50%;display:grid;place-items:center;font-size:16px;
@@ -182,6 +191,11 @@
   }
   .dish:hover .del{opacity:.8}
   .del:hover{background:var(--berry);color:#fff;transform:scale(1.1)}
+  .del2{
+    width:26px;height:26px;border:none;border-radius:8px;background:#f3e2c8;color:#a06b3a;
+    font-weight:800;font-size:12px;transition:.18s;flex-shrink:0;
+  }
+  .del2:hover{background:var(--berry);color:#fff;transform:scale(1.1)}
   .add-dish{
     width:calc(100% - 34px);margin:8px 17px 4px;padding:9px;border-radius:11px;
     border:1.7px dashed #dfc096;background:transparent;color:#9a7448;font-weight:800;font-size:13.5px;transition:.18s;
@@ -227,7 +241,8 @@
   .dlg-head small{display:block;font-family:'Nunito';font-weight:700;font-size:12px;color:var(--ink-soft)}
   .dlg-body{padding:18px 24px 24px;max-height:68vh;overflow:auto}
   .rules{margin-bottom:16px}
-  .rules h4,.grp h4{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--ink-faint);margin-bottom:8px}
+  .rules h4,.grp h4,.shop-h{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--ink-faint);margin-bottom:8px}
+  .shop-h{margin:14px 0 6px}
   .rules ul{list-style:none}
   .rules li{position:relative;padding:0 0 8px 20px;font-size:14.5px}
   .rules li::before{content:'•';position:absolute;left:4px;color:var(--c,var(--terra));font-weight:900}
@@ -247,9 +262,10 @@
   .preview{display:none;text-align:center;margin-bottom:14px}
   .preview img{max-height:150px;border-radius:12px;box-shadow:var(--shadow);border:4px solid #fff}
   .sl{display:block;font-weight:800;font-size:14px;color:var(--ink-soft);margin:6px 0 14px}
-  .sl input{width:100%;accent-color:var(--terra);margin-top:8px}
+  .sl input,.sl textarea{width:100%;accent-color:var(--terra);margin-top:8px}
   .tin{width:100%;padding:10px 12px;border:1.6px solid #e0c39a;border-radius:11px;font:inherit;font-weight:600;background:#fffdf7;color:var(--ink)}
   .tin:focus{outline:none;border-color:var(--terra)}
+  textarea.tin{resize:vertical;min-height:44px;line-height:1.45}
   .dlg-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
   .primary{background:var(--terra);color:#fff;border:none;border-radius:11px;padding:10px 18px;font-weight:800;font-size:14px;transition:.18s}
   .primary:hover{background:#bf4e1a;transform:translateY(-2px);box-shadow:0 8px 18px rgba(217,93,36,.35)}
@@ -260,6 +276,32 @@
   .help ol{padding-left:20px;margin-top:8px}
   .help li{margin:6px 0}
   .help code{background:#f6e8cf;padding:1px 6px;border-radius:6px;font-size:12px}
+
+  /* каталог рецептов */
+  .rform .tin{margin-bottom:8px}
+  .rrow{display:flex;gap:8px;align-items:center;padding:9px 2px;border-bottom:1px dashed var(--line)}
+  .rinfo{flex:1;min-width:0}
+  .rinfo b{font-size:14.5px}
+  .rinfo small{display:block;color:var(--ink-faint);font-weight:600;font-size:12px}
+  /* выбор блюда */
+  .pick-list{max-height:44vh;overflow:auto;margin-top:10px;display:flex;flex-direction:column;gap:6px}
+  .pick-item{text-align:left;border:1.6px solid var(--line);background:#fffdf7;border-radius:12px;padding:9px 12px;transition:.15s}
+  .pick-item:hover{border-color:var(--terra);transform:translateY(-1px)}
+  .pick-item b{display:block;font-size:14.5px;color:var(--ink)}
+  .pick-item small{color:var(--ink-faint);font-weight:600;font-size:12px}
+  .pick-new{border-style:dashed}
+  .pick-new b{color:var(--terra)}
+  /* список покупок */
+  .minidays{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  .miniday{padding:6px 10px;border-radius:999px;border:1.6px solid #e8d2ae;background:rgba(255,255,255,.7);font-weight:800;font-size:12px;color:#6d5233;transition:.15s}
+  .miniday.active{background:var(--terra);border-color:var(--terra);color:#fff}
+  .srow{display:flex;align-items:center;gap:8px;padding:7px 2px;border-bottom:1px dashed var(--line)}
+  .srow label{flex:1;display:flex;gap:10px;align-items:center;cursor:pointer;min-width:0}
+  .srow input[type=checkbox]{width:20px;height:20px;accent-color:var(--herb);flex-shrink:0}
+  .srow span{font-weight:700;font-size:14.5px;min-width:0}
+  .srow span small{display:block;color:var(--ink-faint);font-weight:600;font-size:11.5px}
+  .extra-add{display:flex;gap:8px;margin-top:12px}
+  .extra-add .tin{flex:1}
 
   #toast{
     position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);opacity:0;z-index:99;
@@ -288,15 +330,22 @@
   @media print{
     @page{margin:12mm}
     body{background:#fff}
-    #bgPhoto,#bgTint,.glow,.floaters,.no-print,.tabsbar,.day-tools,.add-dish,.del,.board-actions,.footer .love,.footer button{display:none!important}
-    .board{background:#fff;color:var(--ink);border-bottom:3px solid #ccc;box-shadow:none}
-    .board h1{color:var(--ink);text-shadow:none}.board .eyebrow,.board .sub{color:#666}
-    .fchip{border-color:#999;background:#fff}.fchip b{color:#222}.fchip i{color:#666}.fchip::after{display:none}
-    .day{display:block!important;page-break-inside:auto}
+    #bgPhoto,#bgTint,.glow,.floaters,.no-print,.tabsbar,.board,.footer,.day-tools,.add-dish,.del,.del2,.vid,.board-actions{display:none!important}
+    #printTitle{display:block;font-family:'Unbounded',sans-serif;font-weight:700;font-size:20px;color:var(--ink);margin:0 0 14px}
+    .wrap{max-width:none;padding:0}
+    .day-head{margin:18px 0 12px}
+    .day-head h2::after{background:#ccc}
+    .day-date{color:#666}
+    .today-badge{display:none}
     .meals{grid-template-columns:1fr 1fr;gap:10px}
-    .meal{box-shadow:none;break-inside:avoid}
+    .meal{box-shadow:none;break-inside:avoid;border-color:#ddd;border-top-color:#999}
     .meal:hover{transform:none}
-    .day-head{margin-top:18px}
+    .note{background:#f6f6f6;box-shadow:none;transform:none}
+    .note::before{display:none}
+    body.print-day .day{display:none!important}
+    body.print-day .day.active{display:block!important}
+    body.print-week .day{display:block!important}
+    .day{page-break-inside:auto}
   }
 </style>
 </head>
@@ -328,10 +377,12 @@
     <div class="family" id="family"></div>
     <div class="pot" aria-hidden="true"><span class="steam"></span><span class="steam"></span><span class="steam"></span>🍲</div>
     <div class="board-actions no-print">
-      <button id="btnSync" class="hot" title="Облачная синхронизация между устройствами семьи">☁ Облако</button>
+      <button id="btnShop" class="hot" title="Что купить: ингредиенты блюд выбранного дня">🛒 Купить<span class="bcount" id="shopBadge" hidden></span></button>
+      <button id="btnRecipes" title="Каталог блюд с ингредиентами и ссылками на рецепты">📖 Рецепты</button>
+      <button id="btnSync" title="Облачная синхронизация между устройствами семьи">☁ Облако</button>
       <button id="btnPhoto" title="Сменить фоновую фотографию">📷 Фото</button>
       <button id="btnExport" title="Сохранить файл с текущим меню и фото — резервная копия">📤 Копия</button>
-      <button id="btnPrint" title="Распечатать меню на неделю">🖨 Печать</button>
+      <button id="btnPrint" title="Печать: один день или вся неделя">🖨 Печать</button>
     </div>
   </div>
 </header>
@@ -351,6 +402,7 @@
 </nav>
 
 <main class="wrap">
+  <div id="printTitle"></div>
   <div id="days"></div>
 </main>
 
@@ -413,21 +465,69 @@
       <button class="primary" id="btnSaveSync">Сохранить и подключить</button>
     </div>
     <details class="help">
-      <summary>Как подключить (один раз, ~5 минут; регистрация только у одного из семьи)</summary>
+      <summary>Как подключить (один раз; регистрация только у одного из семьи)</summary>
       <ol>
-        <li>github.com → создать бесплатный аккаунт (тому, кто настраивает).</li>
-        <li>gist.github.com → имя файла <code>menu.json</code>, содержимое <code>{}</code> → кнопка <b>Create secret gist</b>. Скопировать ID из адресной строки (хвост ссылки после последнего «/»).</li>
-        <li>GitHub → Settings → Developer settings → Personal access tokens → <b>Tokens (classic)</b> → Generate new token → отметить <b>только галку gist</b> → создать → скопировать токен (показывается один раз).</li>
-        <li>Вставить ID и токен выше → «Сохранить и подключить» → «⬆ Отправить» (меню уедет в облако).</li>
-        <li>Рекомендуется: создать репозиторий <code>menu</code>, загрузить эту страницу как <code>index.html</code>, Settings → Pages → ветка <code>main</code> → появится ссылка вида <code>https://логин.github.io/menu/</code>. В ссылке нет личных данных — только «движок».</li>
-        <li>«🔗 Ссылка для семьи» → отправить второму супругу в любом мессенджере: ссылка откроет страницу и сама подставит код доступа. На iPhone: Поделиться → «На экран „Домой“».</li>
-        <li>Дальше оба просто жмут «☁ Облако → ⬆/⬇» или страница сама предложит свежую версию при открытии. Код можно отозвать в любой момент: Settings → Tokens → Delete.</li>
+        <li>gist.github.com → файл <code>menu.json</code>, содержимое <code>{}</code> → <b>Create secret gist</b> → скопировать ID (хвост ссылки после последнего «/»).</li>
+        <li>GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → галка <b>только gist</b> → создать → скопировать токен.</li>
+        <li>Вставить оба значения выше → «Сохранить и подключить» → «⬆ Отправить».</li>
+        <li>На втором устройстве открыть ссылку Pages → те же значения → «Сохранить и подключить» → «⬇ Загрузить».</li>
+        <li>«🔗 Ссылка для семьи» — ссылка со встроенным кодом доступа для второго супруга.</li>
       </ol>
     </details>
   </div>
 </dialog>
 
+<!-- диалог: каталог рецептов -->
+<dialog id="recipeDialog">
+  <div class="dlg-head"><span class="pava" style="--c:#6f8f3f">📖</span><span>Рецепты<small>каталог блюд: ингредиенты с количеством и ссылки «как готовить»</small></span></div>
+  <div class="dlg-body">
+    <div class="rform">
+      <input class="tin" id="recName" placeholder="Название блюда" autocomplete="off">
+      <label class="sl" style="margin:0 0 8px">Ингредиенты — по одному в строке, количество через запятую
+        <textarea class="tin" id="recIng" rows="4" placeholder="курица, 500 г&#10;рис, 1 стакан&#10;морковь, 1 шт&#10;зелень, 1 пуч"></textarea>
+      </label>
+      <input class="tin" id="recUrl" placeholder="Ссылка на рецепт или видео (необязательно)" autocomplete="off" style="margin-bottom:10px">
+      <div class="dlg-actions">
+        <button class="ghost" id="recCancel" hidden>Отменить правку</button>
+        <button class="primary" id="recSave">Сохранить рецепт</button>
+      </div>
+    </div>
+    <div id="recipeList"></div>
+    <p class="fine-sm">Каталог путешествует вместе с меню в облаке. Блюда из каталога несут ингредиенты в список «🛒 Купить», а ссылка на рецепт показывает кнопку 📹 прямо в меню.</p>
+  </div>
+</dialog>
+
+<!-- диалог: выбор блюда -->
+<dialog id="pickerDialog">
+  <div class="dlg-head"><span class="pava" style="--c:#f2b134">🍽</span><span>Добавить блюдо<small id="pickWhere"></small></span></div>
+  <div class="dlg-body">
+    <input class="tin" id="pickSearch" placeholder="Поиск по каталогу (название или ингредиент)…" autocomplete="off">
+    <div class="pick-list" id="pickList"></div>
+    <div class="dlg-actions" style="margin-top:12px">
+      <button class="ghost" id="pickEmpty">+ пустое поле (вписать вручную)</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- диалог: список покупок -->
+<dialog id="shopDialog">
+  <div class="dlg-head"><span class="pava" style="--c:#d95d24">🛒</span><span>Что купить<small id="shopDate"></small></span></div>
+  <div class="dlg-body">
+    <div class="minidays" id="shopDays"></div>
+    <h4 class="shop-h">Купить</h4>
+    <div id="shopBuy"></div>
+    <div class="extra-add">
+      <input class="tin" id="shopExtraIn" placeholder="Добавить продукт вручную…" autocomplete="off">
+      <button class="ghost" id="shopExtraAdd">+</button>
+    </div>
+    <h4 class="shop-h">Есть в холодильнике — не покупаем</h4>
+    <div id="shopFridge"></div>
+    <p class="fine-sm">Отметки «есть в холодильнике» и ручные добавки синхронизируются через облако: отметьте → «☁ → ⬆ Отправить», на втором устройстве «⬇ Загрузить».</p>
+  </div>
+</dialog>
+
 <div id="copyMenu" class="popmenu"></div>
+<div id="printMenu" class="popmenu"></div>
 <div id="toast"></div>
 
 <script>
@@ -439,7 +539,8 @@ const PEOPLE=[
   {id:'vera', name:'Вера', emoji:'👶', color:'#e9a13b', note:'отдельно, без соли и сахара, пюрируем'}
 ];
 
-const PERSON_TIPS={
+/* базовые памятки (редактируются в интерфейсе и хранятся в облаке) */
+const DEFAULT_TIPS={
  papa:{
   tagline:'Памятка: печень + курс на лёгкость',
   rules:[
@@ -461,6 +562,7 @@ const PERSON_TIPS={
   rules:[
    '<b>Температура:</b> еда приятно тёплая (примерно 35–45 °C). Суп и чай после кипячения остужаем; ничего обжигающего, ничего ледяного и «straight из холодильника», мороженое — пауза.',
    '<b>Частота:</b> 5–6 раз в день небольшими порциями (250–300 мл), примерно в одно время, перерывы не больше 3,5–4 часов. При дискинезии по гипомоторному типу регулярная еда + ложка растительного масла в блюдо — лучшая помощь желчеоттоку.',
+   '<b>Глютен:</b> лёгкая непереносимость — не полный запрет, но бережно. Хлеб — только подсушенный в тостере; пшеничные макароны, манка и свежая выпечка — ограничить и понемногу. Основа гарниров: рис, гречка, кукуруза, пшено, картофель. Следим за скрытым глютеном в колбасах, соусах, магазинных сладостях.',
    '<b>Кислое — пауза, пока заживают эрозии:</b> цитрусовые и их соки, киви, ананас, гранат, кислые яблоки и сливы, клюква и смородина, помидоры и томатная паста, квашеная капуста и соленья, квас и уксус в заправках.',
    '<b>Грубая клетчатка — ограничить:</b> сырая белокочанная капуста, редис и редька, болгарский перец и огурцы с грубой кожицей, грибы, бобовые (фасоль, горох, чечевица), кукуруза, отруби и чёрный хлеб с отрубями, орехи и семечки, кожица яблок и винограда, грубая курага и чернослив. Овощи — варёные, тушёные, запечённые; фрукты — печёные или мягкие, без кожи.',
    '<b>Острое — убрать:</b> чили, хрен, горчица, аджика, острые соусы; сырой чеснок и лук — по минимуму, в блюдах варёными — можно.',
@@ -469,8 +571,8 @@ const PERSON_TIPS={
    '<b>Питьё:</b> негазированная тёплая вода около 1,5 л в день — достаточно жидкости важно и при повышенных тромбоцитах (кровь не должна сгущаться).'
   ],
   gt:['✅ Рекомендовано','🟡 Возможно — немного и не каждый день','⛔ Не желательно'],
-  ok:['протёртые овсяная, рисовая, манная каши','слизистые и овощные крем-супы','супы на втором бульоне','индейка и курица на пару','кролик','постная говядина отварная','треска, минтай, хек, судак на пару','паровой омлет','свежий некислый творог','молоко и сливки в блюдах','ряженка и свежий кефир','неострый сыр','картофель, кабачок, тыква, морковь отварные и запечённые','цветная капуста и брокколи','свёкла хорошо вываренная','печёные яблоки','спелые бананы','печёная груша без кожи','кисели и компоты','белый хлеб вчерашний, сухарики, галеты','сливочное масло до 20 г в день','растительное масло 1–2 ст. л. в блюда','слабый тёплый чай','латте после завтрака','тёплая негазированная вода'],
-  maybe:['макароны','сладкий помидор без кожи, 1–2 ломтика, не натощак','спелые персики и абрикосы без кожи','мёд и варенье — немного','адыгейский сыр, моцарелла','сметана в блюда','зефир, мармелад, пастила — понемногу','латте 1 чашка в день после завтрака','варёная колбаса — редко'],
+  ok:['протёртые овсяная, рисовая, манная каши','слизистые и овощные крем-супы','супы на втором бульоне','индейка и курица на пару','кролик','постная говядина отварная','треска, минтай, хек, судак на пару','паровой омлет','свежий некислый творог','молоко и сливки в блюдах','ряженка и свежий кефир','неострый сыр','картофель, кабачок, тыква, морковь отварные и запечённые','цветная капуста и брокколи','свёкла хорошо вываренная','печёные яблоки','спелые бананы','печёная груша без кожи','кисели и компоты','белый хлеб из тостера, сухарики, галеты','сливочное масло до 20 г в день','растительное масло 1–2 ст. л. в блюда','слабый тёплый чай','латте после завтрака','тёплая негазированная вода'],
+  maybe:['макароны','сладкий помидор без кожи, 1–2 ломтика, не натощак','спелые персики и абрикосы без кожи','мёд и варенье — немного','адыгейский сыр, моцарелла','сметана в блюда','зефир, мармелад, пастила — понемногу','латте 1 чашка в день после завтрака','варёная колбаса — редко','пшеничные макароны — редко и понемногу (глютен)','свежая выпечка — кусочек на праздник (глютен)'],
   no:['жареное и жирное','копчёности и консервы','крепкие мясные и грибные бульоны','цитрусовые, киви, ананас, кислые соки','помидоры натощак, томатная паста, кетчуп','квашеная капуста, соленья, маринады, уксус','сырая капуста, редис, редька, грибы, бобовые, кукуруза','отруби и свежий чёрный хлеб','свежая сдоба и слоёное тесто','шоколад и какао натощак','газировка и квас','чили, хрен, горчица, аджика','очень горячее и ледяное, мороженое','кофе натощак и вечером','алкоголь']
  },
  fedya:{
@@ -478,19 +580,21 @@ const PERSON_TIPS={
   rules:[
    '<b>Режим:</b> 4–5 приёмов пищи; завтрак перед школой и горячий обед — обязательно.',
    '<b>Энергия:</b> каждый день сложные углеводы (каши, макароны, картофель, хлеб) + белок (мясо, рыба, яйцо, молочка).',
+   '<b>Аллергия на пыльцу берёзы:</b> перекрёстные продукты — яблоки, груши, персики, абрикосы, вишня, слива, а также морковь, сельдерей, фундук. Яблоки — в ограниченном количестве; печёные и варёные (шарлотка, печёные яблоки, компот) переносятся лучше: нагревание разрушает перекрёстный аллерген. Сырые косточковые — понемногу и с оглядкой на реакцию.',
    '<b>Овощи и фрукты:</b> 3–4 «цвета» в день — в суп, гарнир и как перекус.',
-   '<b>Перекус правильно:</b> яблоко + горсть орехов, творожный стаканчик, бутерброд с сыром — вместо чипсов и печенья с соком.',
+   '<b>Перекус правильно:</b> яблоко (печёное или немного) + горсть орехов, творожный стаканчик, бутерброд с сыром — вместо чипсов и печенья с соком.',
    '<b>Сладкое:</b> после основной еды, а не вместо неё; газировка и чипсы — формат «праздник».',
    '<b>Питьё:</b> вода и компоты вместо сладких напитков.'
   ],
   gt:['✅ Рекомендовано','🟡 Возможно — понемногу','⛔ Не желательно'],
-  ok:['каши и крупы','макароны, картофель, хлеб','мясо, птица, рыба каждый день','яйца','молоко, кефир, творог, сыр','овощи, фрукты, ягоды 3–4 раза в день','сливочное и растительное масло','орехи и сухофрукты на перекус','мёд','домашние супы и борщи','вода и компоты'],
-  maybe:['сладости и шоколад после еды — немного','домашняя пицца и бургер','магазинные сосиски — редко','пакетированный сок — полстакана, редко','газировка и чипсы — только по праздникам'],
+  ok:['каши и крупы','макароны, картофель, хлеб','мясо, птица, рыба каждый день','яйца','молоко, кефир, творог, сыр','овощи 3–4 раза в день','фрукты и ягоды (с учётом берёзовой аллергии)','сливочное и растительное масло','орехи и сухофрукты на перекус','мёд','домашние супы и борщи','вода и компоты','печёные яблоки и шарлотка'],
+  maybe:['сладости и шоколад после еды — немного','домашняя пицца и бургер','магазинные сосиски — редко','пакетированный сок — полстакана, редко','газировка и чипсы — только по праздникам','сырые яблоки и косточковые — ограниченно (перекрёстная аллергия к берёзе)','сырая морковь и сельдерей — понемногу'],
   no:['энергетики','много газировки и сладких соков','чипсы, сухарики, конфеты вместо еды','глазированные сладкие хлопья каждый день','фастфуд несколько раз в неделю','еда «на бегу» без горячего']
  },
  vera:{
   tagline:'Памятка: отдельная кастрюлька, всё пюрируем',
   rules:[
+   '<b>Аллергия на яйцо:</b> яйцо и желток исключены полностью, в том числе в составе блюд: никаких омлетов, запеканок, тефтелей и выпечки с яйцом, макарон с яйцом. Читаем этикетки: «яйцо», «яичный белок/альбумин», «лизоцим», майонез. Чем скреплять дома: размятый картофель, банан, овсяный отвар.',
    '<b>Без соли и сахара:</b> порцию из общей кастрюли откладываем до соления; вкус — натуральный.',
    '<b>Консистенция по возрасту:</b> пюре → мелко рубленое → мягкие кусочки; новые текстуры вводим постепенно.',
    '<b>Новый продукт:</b> по одному, 3–5 дней, в первой половине дня — следим за кожей и животиком.',
@@ -499,11 +603,52 @@ const PERSON_TIPS={
    '<b>Режим:</b> 5 приёмов пищи + грудное молоко или смесь по требованию.'
   ],
   gt:['✅ Уже можно','🟡 Осторожно, понемногу','⛔ Пока нельзя'],
-  ok:['кабачок, цветная капуста, брокколи','картофель, морковь, тыква','каши: гречневая, рисовая, кукурузная, овсяная','фруктовые пюре: яблоко, груша, банан','мясные пюре: индейка, кролик, курица','омлет и желток','детский кефир и творожок','сливочное и растительное масло чуть-чуть','детское печенье и хлеб','вода'],
-  maybe:['белая рыба — следить за реакцией','светлые ягоды протёртые','макароны твёрдых сортов','детское печенье','компот из сухофруктов без сахара','мягкий сыр'],
-  no:['соль и сахар','мёд до года','целые орехи, виноград, попкорн','коровье молоко как напиток до года','сосиски и копчёности','взрослые консервы и соусы','пакетированные соки и сладкие напитки','шоколад и какао','жареное и жирное','всё солёное и острое с общего стола']
+  ok:['кабачок, цветная капуста, брокколи','картофель, морковь, тыква','каши: гречневая, рисовая, кукурузная, овсяная','фруктовые пюре: яблоко, груша, банан','мясные пюре: индейка, кролик, курица','детский кефир и творожок','сливочное и растительное масло чуть-чуть','детское печенье без яйца и хлеб','вода'],
+  maybe:['белая рыба — следить за реакцией','светлые ягоды протёртые','макароны твёрдых сортов (без яйца)','детское печенье','компот из сухофруктов без сахара','мягкий сыр'],
+  no:['яйцо и желток в любом виде','продукты с яйцом: майонез, выпечка, макароны с яйцом','соль и сахар','мёд до года','целые орехи, виноград, попкорн','коровье молоко как напиток до года','сосиски и копчёности','взрослые консервы и соусы','пакетированные соки и сладкие напитки','шоколад и какао','жареное и жирное','всё солёное и острое с общего стола']
  }
 };
+
+/* стартовый каталог: [название, ингредиенты через запятую] */
+const STARTER=[
+ ['Овсяная каша с печёным яблоком','овсяные хлопья, яблоко, молоко, сливочное масло, сахар'],
+ ['Какао на молоке','какао-порошок, молоко, сахар'],
+ ['Крем-суп из кабачка и картофеля','кабачок, картофель, морковь, лук, сливочное масло'],
+ ['Паровые тефтели из индейки','фарш индейки, рис, яйцо, морковь, лук'],
+ ['Печёное яблоко с творогом','яблоко, творог, сахар'],
+ ['Треска, запечённая с морковью','треска, морковь, лук, сметана'],
+ ['Рис отварной','рис, сливочное масло'],
+ ['Пшённая каша с тыквой','пшено, тыква, молоко, сливочное масло'],
+ ['Лёгкий куриный суп с лапшой','курица, лапша, картофель, морковь, лук'],
+ ['Подсушенный белый хлеб','белый хлеб'],
+ ['Банан и детский творожок','банан, детский творожок'],
+ ['Отварная говядина с гречкой','говядина, гречка, лук'],
+ ['Тушёная морковь','морковь, сливочное масло'],
+ ['Творожная запеканка со сметаной (в духовке)','творог, яйцо, манка, сметана, сахар'],
+ ['Борщ без зажарки, со сметаной','говядина, свёкла, капуста, картофель, морковь, лук, сметана'],
+ ['Домашний кисель с галетным печеньем','ягоды замороженные, крахмал, сахар, галетное печенье'],
+ ['Рыбные котлеты на пару','филе белой рыбы, белый хлеб сушёный, молоко, яйцо'],
+ ['Картофельное пюре','картофель, молоко, сливочное масло'],
+ ['Рисовая каша с курагой','рис, курага, молоко, сливочное масло'],
+ ['Суп с индейкой, овощами и рисом','индейка, рис, картофель, морковь, кабачок, лук'],
+ ['Творожное суфле','творог, яйцо, сахар, сливочное масло'],
+ ['Картофельная запеканка с отварной курицей','картофель, курица, яйцо, молоко, сливочное масло'],
+ ['Отварная свёкла с маслом','свёкла, растительное масло'],
+ ['Гречневая каша пополам с молоком','гречка, молоко, сливочное масло'],
+ ['Овощной крем-суп с сухариками','кабачок, морковь, картофель, сухарики, сливочное масло'],
+ ['Кефир и галетное печенье','кефир, галетное печенье'],
+ ['Паровые биточки из говядины','фарш говяжий, белый хлеб сушёный, яйцо, лук'],
+ ['Макароны отварные','макароны, сливочное масло'],
+ ['Сырники в духовке с йогуртом','творог, яйцо, мука, сахар, йогурт'],
+ ['Куриный суп с рисом и яйцом','курица, рис, картофель, морковь, яйцо'],
+ ['Пюре банан–яблоко','банан, яблоко'],
+ ['Рыба на пару с тушёными овощами','филе белой рыбы, морковь, кабачок, лук'],
+ ['Паровой омлет с брокколи','яйцо, молоко, брокколи'],
+ ['Тост с сыром','белый хлеб, сыр, сливочное масло'],
+ ['Суп с фрикадельками и овощами','фарш индейки, картофель, морковь, лук'],
+ ['Домашняя шарлотка с яблоками','яблоко, мука, яйцо, сахар'],
+ ['Ленивые голубцы с индейкой (тушёные)','фарш индейки, рис, капуста, морковь, лук, сметана']
+];
 
 const ALL=['papa','mama','fedya','vera'];
 const MEALS=[
@@ -535,7 +680,7 @@ function defaultWeek(){return[
   {dishes:[D('Лёгкий куриный суп с лапшой',['papa','mama','fedya']),D('Подсушенный белый хлеб',ALL)],
    note:'Вере: овощной отвар и размятые овощи из супа.'},
   {dishes:[D('Банан и детский творожок',ALL)],note:''},
-  {dishes:[D('Отварная говядина с гречкой',['papa','mama','fedya']),D('Тушёная морковь',['papa','fedya','vera'])],
+  {dishes:[D('Отварная говядина с гречкой',['papa','mama','fedya']),D('Тушёная морковь',['papa','fedya'])],
    note:'Вере: говядину провернуть дважды, гречку — вязкую.'})},
  {meals:mk(
   {dishes:[D('Творожная запеканка со сметаной (в духовке)',ALL)],note:'Вере: серединку запеканки, без корочки.'},
@@ -564,7 +709,7 @@ function defaultWeek(){return[
   {dishes:[D('Паровой омлет с брокколи',['papa','mama','fedya']),D('Тост с сыром',['papa','mama','fedya'])],
    note:'Вере: желток и брокколи размять.'},
   {dishes:[D('Суп с фрикадельками и овощами',ALL)],note:'Вере: фрикадельку размять, овощи пюрировать.'},
-  {dishes:[D('Домашняя шарлотка с яблоками',['papa','mama','fedya'])],note:'Вере: печёное яблоко без сахара.'},
+  {dishes:[D('Домашняя шарлотка с яблоками',['papa','mama','fedya'])],note:'Вере: печёное яблоко без сахара, кусочек.'},
   {dishes:[D('Ленивые голубцы с индейкой (тушёные)',['papa','mama','fedya'])],
    note:'Вере: капусту тушить дольше, порция небольшая.'})}
 ];}
@@ -578,7 +723,6 @@ const keyOf=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const mondayDate=off=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-todayIdx+off*7);return d;};
 const curKey=keyOf(mondayDate(0));
 
-/* код доступа может приехать ссылкой: …/#gist=…&token=… */
 let SYNC=(()=>{try{return JSON.parse(localStorage.getItem(SYNC_KEY))||{gist:'',token:''}}catch(e){return{gist:'',token:''}}})();
 (function(){
   const h=new URLSearchParams(location.hash.slice(1));
@@ -604,13 +748,40 @@ let pendingRemote=null, pendingLabel='';
 if(EMBEDDED&&EMBEDDED.weeks){
   const lt=hadLocal?(state.ts||0):0, et=EMBEDDED.ts||0;
   if(!hadLocal||et>lt){ state=EMBEDDED; }
-  else if(et<lt){ pendingRemote=EMBEDDED; pendingLabel='встроенную в открытый файл'; }
+  else if(et<lt){ pendingRemote=EMBEDDED; pendingLabel='файл'; }
 }
 if(!state.weeks[curKey]) state.weeks[curKey]=(!hadLocal&&!EMBEDDED)?defaultWeek():emptyWeek();
+
+/* ингредиенты: строка → {н, кол-во}; миграция старых данных + памятки + связки блюд с рецептами */
+const parseIngLine=s=>{const i=s.indexOf(',');
+  return i>-1?{n:s.slice(0,i).trim(),q:s.slice(i+1).trim()}:{n:s.trim(),q:''};};
+const parseIngText=t=>t.split(/\n/).map(s=>s.trim()).filter(Boolean).map(parseIngLine);
+const ingLabel=r=>r.ing.map(x=>x.n+(x.q?', '+x.q:'')).join(', ');
+function migrate(st){
+  if(!st||typeof st!=='object')return st;
+  if(!Array.isArray(st.recipes)||!st.recipes.length)
+    st.recipes=STARTER.map((r,i)=>({id:'r'+(i+1),name:r[0],ing:r[1].split(', ').map(s=>({n:s,q:''})),url:''}));
+  st.recipes.forEach(r=>{
+    if(Array.isArray(r.ing)&&r.ing.length&&typeof r.ing[0]==='string')
+      r.ing=r.ing.map(s=>typeof s==='string'?parseIngLine(s):s);
+    if(!Array.isArray(r.ing))r.ing=[];
+    if(typeof r.url!=='string')r.url='';
+  });
+  if(!st.fridge||typeof st.fridge!=='object')st.fridge={};
+  if(!st.shop||typeof st.shop!=='object')st.shop={};
+  if(!st.tips||typeof st.tips!=='object')st.tips=JSON.parse(JSON.stringify(DEFAULT_TIPS));
+  PEOPLE.forEach(p=>{if(!st.tips[p.id])st.tips[p.id]=JSON.parse(JSON.stringify(DEFAULT_TIPS[p.id]));});
+  for(const k in st.weeks){const w=st.weeks[k];if(!w||!w.meals)continue;
+    MEALS.forEach(m=>{const md=w.meals[m.id];if(!md)return;
+      md.dishes.forEach(d=>{if(!d.r){const r=st.recipes.find(x=>x.name===d.name);if(r)d.r=r.id;}});});}
+  return st;
+}
+migrate(state);
 
 let offset=0;
 let WK=state.weeks[curKey];
 let activeDay=todayIdx, saveTimer=null, toastTimer=null;
+let pickTarget=null, editRecId=null, shopDay=todayIdx, tipPerson=null;
 
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
@@ -619,6 +790,8 @@ const dateFor=i=>{const d=mondayDate(offset);d.setDate(d.getDate()+i);return d;}
 const fmtDate=d=>`${d.getDate()} ${MGEN[d.getMonth()]}`;
 const fmtTs=ts=>ts?new Date(ts).toLocaleString('ru-RU',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):'без даты';
 function plural(n){const w=(n%10===1&&n%100!==11)?'блюдо':(n%10>=2&&n%10<=4&&(n%100<12||n%100>14))?'блюда':'блюд';return `${n} ${w}`;}
+function dishCountOf(w){let n=0;if(!w||!w.meals)return 0;for(const k in w.meals)n+=w.meals[k].dishes.length;return n;}
+function totalCount(st){let n=0;if(st&&st.weeks)for(const k in st.weeks)n+=dishCountOf(st.weeks[k]);return n;}
 
 /* ================== РЕНДЕР ================== */
 function renderFamily(){
@@ -629,19 +802,53 @@ function renderFamily(){
   $$('.fchip').forEach(b=>b.addEventListener('click',()=>openPerson(b.dataset.p)));
 }
 function openPerson(id){
-  const p=PEOPLE.find(x=>x.id===id), t=PERSON_TIPS[id];
+  tipPerson=id;
+  const p=PEOPLE.find(x=>x.id===id), t=state.tips[id];
   $('#personHead').style.setProperty('--c',p.color);
   $('#personHead').innerHTML=`<span class="pava" style="--c:${p.color}">${p.emoji}</span>
-    <span>${p.name}<small>${t.tagline}</small></span>`;
+    <span>${p.name}<small>${esc(t.tagline)}</small></span>`;
   $('#personBody').style.setProperty('--c',p.color);
   $('#personBody').innerHTML=`
     <div class="rules"><h4>Правила</h4><ul>${t.rules.map(r=>`<li>${r}</li>`).join('')}</ul></div>
     ${[['ok',t.gt[0]],['maybe',t.gt[1]],['no',t.gt[2]]].map(([k,title])=>`
-      <div class="grp ${k}"><h4>${title}</h4>
-        <div class="pills">${t[k].map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+      <div class="grp ${k}"><h4>${esc(title)}</h4>
+        <div class="pills">${t[k].map(x=>`<span class="pill">${esc(x)}</span>`).join('')}</div>
       </div>`).join('')}
-    <p class="fine-sm">Семейная шпаргалка по принципам щадящего питания (за основу взяты столы №1 и №5); сомнения по конкретным продуктам сверяем с врачом.</p>`;
+    <div class="dlg-actions" style="margin-top:14px">
+      <button class="ghost" id="tipEditBtn">✎ Править памятку</button>
+    </div>`;
+  $('#tipEditBtn').addEventListener('click',()=>openTipEdit(id));
   $('#personDialog').showModal();
+}
+function openTipEdit(id){
+  const t=state.tips[id];
+  $('#personBody').innerHTML=`
+    <label class="sl">Названия трёх групп (по одному в строке)
+      <textarea class="tin" id="tfGt" rows="3">${esc(t.gt.join('\n'))}</textarea></label>
+    <label class="sl">Правила — по одному в строке
+      <textarea class="tin" id="tfRules" rows="8">${esc(t.rules.join('\n'))}</textarea></label>
+    <label class="sl">Рекомендовано — по одному в строке
+      <textarea class="tin" id="tfOk" rows="6">${esc(t.ok.join('\n'))}</textarea></label>
+    <label class="sl">Возможно — по одному в строке
+      <textarea class="tin" id="tfMaybe" rows="4">${esc(t.maybe.join('\n'))}</textarea></label>
+    <label class="sl">Не желательно — по одному в строке
+      <textarea class="tin" id="tfNo" rows="6">${esc(t.no.join('\n'))}</textarea></label>
+    <div class="dlg-actions">
+      <button class="ghost" id="tfCancel">Отменить</button>
+      <button class="primary" id="tfSave">Сохранить памятку</button>
+    </div>
+    <p class="fine-sm">В правилах можно выделить начало тегами &lt;b&gt;…&lt;/b&gt; — по желанию. Памятка сохранится в облаке и обновится на всех устройствах семьи.</p>`;
+  $('#tfCancel').addEventListener('click',()=>openPerson(id));
+  $('#tfSave').addEventListener('click',()=>{
+    const lines=v=>$(v).value.split(/\n/).map(s=>s.trim()).filter(Boolean);
+    const gt=lines('#tfGt');
+    state.tips[id]={
+      tagline:state.tips[id].tagline,
+      gt:gt.length>=3?gt.slice(0,3):state.tips[id].gt,
+      rules:lines('#tfRules'),ok:lines('#tfOk'),maybe:lines('#tfMaybe'),no:lines('#tfNo')
+    };
+    save();openPerson(id);toast('Памятка обновлена 💡');
+  });
 }
 function renderWeekRange(){
   const a=dateFor(0),b=dateFor(6);
@@ -670,9 +877,12 @@ function renderTabs(){
   $$('.tab').forEach(t=>t.addEventListener('click',()=>showDay(+t.dataset.day)));
 }
 function dishHTML(i,mid,k,dish){
+  const rec=dish.r?state.recipes.find(x=>x.id===dish.r):null;
+  const vid=rec&&rec.url?`<a class="vid no-print" href="${esc(rec.url)}" target="_blank" rel="noopener" title="Как готовить: открыть рецепт">📹</a>`:'';
   return `<div class="dish">
     <span class="dish-dot"></span>
     <span class="dish-name" contenteditable="true" data-ph="название блюда…" data-d="${i}" data-m="${mid}" data-i="${k}">${esc(dish.name)}</span>
+    ${vid}
     <div class="who">${PEOPLE.map(p=>`<button class="chip ${dish.who.includes(p.id)?'on':''}" data-p="${p.id}" data-d="${i}" data-m="${mid}" data-i="${k}" title="Для кого: ${p.name}" aria-label="${p.name}">${p.emoji}</button>`).join('')}</div>
     <button class="del no-print" data-d="${i}" data-m="${mid}" data-i="${k}" title="Убрать блюдо">✕</button>
   </div>`;
@@ -721,10 +931,11 @@ function updateCounts(){
   let total=0;
   $$('.tab').forEach(t=>{
     const i=+t.dataset.day;
-    const n=Object.keys(WK[i].meals).reduce((s,m)=>s+WK[i].meals[m].dishes.length,0);
+    const n=dishCountOf(WK[i]);
     total+=n; t.querySelector('.cnt').textContent=n;
   });
   $('#weekStat').textContent=`за неделю: ${total} ${plural(total).split(' ')[1]}`;
+  updateShopBadge();
 }
 function showDay(i){
   activeDay=i;
@@ -739,7 +950,7 @@ function setWeek(off){
   renderWeekRange();updateWeekNav();renderTabs();renderAllDays();showDay(activeDay);save();
 }
 function applyRemote(next){
-  state=next;
+  state=migrate(next);
   if(!state.weeks)state.weeks={};
   if(!state.weeks[curKey])state.weeks[curKey]=emptyWeek();
   WK=state.weeks[curKey];
@@ -761,26 +972,28 @@ function toast(msg){
 }
 
 /* ================== ОБЛАКО (GitHub gist) ================== */
-function syncHeaders(auth){
+function syncHeaders(){
   const h={'Accept':'application/vnd.github+json'};
-  if(auth&&SYNC.token)h['Authorization']='Bearer '+SYNC.token;
+  if(SYNC.token)h['Authorization']='Bearer '+SYNC.token;
   return h;
 }
 async function gistGet(){
-  const r=await fetch('https://api.github.com/gists/'+SYNC.gist,{headers:syncHeaders(true)});
+  const r=await fetch('https://api.github.com/gists/'+SYNC.gist,{headers:syncHeaders()});
   if(!r.ok)throw new Error('gist недоступен (HTTP '+r.status+')');
   const j=await r.json();
   const f=j.files&&j.files['menu.json'];
   if(!f)throw new Error('в gist нет файла menu.json');
   let content=f.content;
   if(f.truncated){content=await (await fetch(f.raw_url)).text();}
-  return JSON.parse(content);
+  const data=JSON.parse(content);
+  if(!data||typeof data!=='object'||!data.weeks)throw new Error('в облаке пока нет меню — загружать нечего');
+  return data;
 }
 async function gistPush(){
   state.ts=Date.now();
   const r=await fetch('https://api.github.com/gists/'+SYNC.gist,{
     method:'PATCH',
-    headers:Object.assign({'Content-Type':'application/json'},syncHeaders(true)),
+    headers:Object.assign({'Content-Type':'application/json'},syncHeaders()),
     body:JSON.stringify({files:{'menu.json':{content:JSON.stringify(state)}}})});
   if(!r.ok)throw new Error('не удалось отправить (HTTP '+r.status+')');
   try{localStorage.setItem(LS_KEY,JSON.stringify(state));}catch(e){}
@@ -790,14 +1003,14 @@ async function syncAuto(){
   try{
     const remote=await gistGet();
     if((remote.ts||0)>(state.ts||0)){
-      pendingRemote=remote;pendingLabel='облачную';
+      pendingRemote=remote;pendingLabel='облако';
       $('#conflictText').innerHTML=
-        `Пока вы отсутствовали, в облаке появилась более свежая версия меню: <b>${fmtTs(remote.ts)}</b>.<br>`+
+        `В облаке семьи лежит более свежая версия меню: <b>${fmtTs(remote.ts)}</b>.<br>`+
         `Ваша локальная версия от <b>${fmtTs(state.ts)}</b>.<br>Загрузить облачную?`;
       $('#takeRemote').textContent='Загрузить из облака';
       $('#conflictDialog').showModal();
     }
-  }catch(e){/* тихо: нет сети или токена только на чтение */}
+  }catch(e){/* тихо: нет сети или облако пустое */}
 }
 function syncStatusText(){
   $('#syncStatus').textContent=SYNC.gist?('подключено · gist '+SYNC.gist.slice(0,8)+'…'):'не подключено';
@@ -818,18 +1031,208 @@ $('#btnPush').addEventListener('click',async()=>{
 });
 $('#btnPull').addEventListener('click',async()=>{
   if(!SYNC.gist){toast('Укажите ID gist');return;}
-  try{const remote=await gistGet();applyRemote(remote);toast('Загружено из облака ☁');}
-  catch(e){toast(e.message);}
+  try{
+    const remote=await gistGet();
+    if(totalCount(remote)===0&&totalCount(state)>0&&
+       !confirm('В облаке — пустое меню. Заменить ваши текущие блюда пустыми?'))return;
+    applyRemote(remote);toast('Загружено из облака ☁');
+  }catch(e){toast(e.message);}
 });
 $('#btnMakeLink').addEventListener('click',()=>{
   if(!SYNC.gist){toast('Сначала подключите облако');return;}
   if(!location.protocol.startsWith('http')){
-    toast('Ссылка появится, когда страница будет размещена на GitHub Pages (см. инструкцию)');return;
+    toast('Ссылка появится, когда страница размещена на GitHub Pages');return;
   }
   const url=location.origin+location.pathname+'#gist='+encodeURIComponent(SYNC.gist)+'&token='+encodeURIComponent(SYNC.token);
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(url).then(()=>toast('Ссылка для семьи скопирована 🔗'),()=>prompt('Скопируйте ссылку:',url));
   }else prompt('Скопируйте ссылку:',url);
+});
+
+/* ================== КАТАЛОГ РЕЦЕПТОВ ================== */
+function renderRecipes(){
+  $('#recipeList').innerHTML=state.recipes.map(r=>`
+    <div class="rrow">
+      <div class="rinfo"><b>${esc(r.name)}${r.url?' 📹':''}</b><small>${esc(ingLabel(r))}</small></div>
+      ${r.url?`<a class="vid" href="${esc(r.url)}" target="_blank" rel="noopener" title="Открыть рецепт">📹</a>`:''}
+      <button class="ghost mini" data-edit="${r.id}" title="Править">✎</button>
+      <button class="del2" data-del="${r.id}" title="Удалить рецепт">✕</button>
+    </div>`).join('')||'<p class="fine-sm">Каталог пуст.</p>';
+}
+function resetRecForm(){editRecId=null;$('#recName').value='';$('#recIng').value='';$('#recUrl').value='';$('#recCancel').hidden=true;}
+$('#btnRecipes').addEventListener('click',()=>{resetRecForm();renderRecipes();$('#recipeDialog').showModal();});
+$('#recCancel').addEventListener('click',resetRecForm);
+$('#recSave').addEventListener('click',()=>{
+  const name=$('#recName').value.trim();
+  if(!name){toast('Введите название блюда');return;}
+  const ing=parseIngText($('#recIng').value);
+  const url=$('#recUrl').value.trim();
+  if(editRecId){const r=state.recipes.find(x=>x.id===editRecId);if(r){r.name=name;r.ing=ing;r.url=url;}}
+  else state.recipes.push({id:'r'+Date.now(),name,ing,url});
+  save();resetRecForm();renderRecipes();toast('Рецепт сохранён 📖');
+});
+$('#recipeList').addEventListener('click',e=>{
+  const ed=e.target.closest('[data-edit]');
+  if(ed){const r=state.recipes.find(x=>x.id===ed.dataset.edit);if(!r)return;
+    editRecId=r.id;$('#recName').value=r.name;
+    $('#recIng').value=r.ing.map(x=>x.n+(x.q?', '+x.q:'')).join('\n');
+    $('#recUrl').value=r.url||'';$('#recCancel').hidden=false;
+    $('#recName').focus();return;}
+  const dl=e.target.closest('[data-del]');
+  if(dl){const r=state.recipes.find(x=>x.id===dl.dataset.del);
+    if(r&&confirm(`Удалить рецепт «${r.name}»? Блюда в меню останутся, но потеряют ингредиенты и ссылку.`)){
+      state.recipes=state.recipes.filter(x=>x.id!==r.id);save();renderRecipes();toast('Рецепт удалён');}
+  }
+});
+
+/* ================== ВЫБОР БЛЮДА ================== */
+function openPicker(d,m){
+  pickTarget={d,m};
+  const meal=MEALS.find(x=>x.id===m);
+  $('#pickWhere').textContent=`${DAY_FULL[d].toLowerCase()}, ${fmtDate(dateFor(d))} · ${meal.name.toLowerCase()}`;
+  $('#pickSearch').value='';renderPicker('');
+  $('#pickerDialog').showModal();
+  setTimeout(()=>$('#pickSearch').focus(),60);
+}
+function renderPicker(q){
+  q=(q||'').trim().toLowerCase();
+  const list=state.recipes.filter(r=>!q||r.name.toLowerCase().includes(q)||r.ing.some(i=>i.n.toLowerCase().includes(q)));
+  let html='';
+  if(q&&!state.recipes.some(r=>r.name.toLowerCase()===q)){
+    html+=`<button class="pick-item pick-new" data-new="1"><b>Добавить блюдо «${esc($('#pickSearch').value.trim())}»</b><small>в каталоге нет — добавится без ингредиентов</small></button>`;
+  }
+  html+=list.slice(0,80).map(r=>`<button class="pick-item" data-r="${r.id}"><b>${esc(r.name)}${r.url?' 📹':''}</b><small>${esc(ingLabel(r))}</small></button>`).join('');
+  if(!list&&!q)html='<p class="fine-sm">Каталог пуст — наполните через «📖 Рецепты».</p>';
+  $('#pickList').innerHTML=html;
+}
+$('#pickSearch').addEventListener('input',e=>renderPicker(e.target.value));
+$('#pickList').addEventListener('click',e=>{
+  const b=e.target.closest('.pick-item');if(!b||!pickTarget)return;
+  const {d,m}=pickTarget;
+  if(b.dataset.new){WK[d].meals[m].dishes.push({name:$('#pickSearch').value.trim(),who:ALL.slice()});}
+  else{const r=state.recipes.find(x=>x.id===b.dataset.r);
+    WK[d].meals[m].dishes.push({name:r.name,who:ALL.slice(),r:r.id});}
+  refreshMeal(d,m);save();$('#pickerDialog').close();toast('Блюдо добавлено 🍽');
+});
+$('#pickEmpty').addEventListener('click',()=>{
+  const {d,m}=pickTarget;
+  WK[d].meals[m].dishes.push({name:'',who:ALL.slice()});
+  refreshMeal(d,m);save();$('#pickerDialog').close();
+  const h=$(`#dishes-${d}-${m}`);const l=h&&h.querySelector('.dish:last-child .dish-name');if(l)l.focus();
+});
+
+/* ================== СПИСОК ПОКУПОК ================== */
+function shopExtras(dayIdx){
+  const k=keyOf(dateFor(dayIdx));
+  if(!state.shop[k])state.shop[k]={extra:[]};
+  return state.shop[k].extra;
+}
+function shopRows(dayIdx){
+  const map=new Map();
+  const day=WK[dayIdx];
+  MEALS.forEach(m=>day.meals[m.id].dishes.forEach(dish=>{
+    if(!dish.r)return;
+    const r=state.recipes.find(x=>x.id===dish.r);if(!r)return;
+    r.ing.forEach(x=>{
+      const k=x.n.toLowerCase();
+      if(!map.has(k))map.set(k,{key:k,name:x.n,qty:[],src:[],extra:-1});
+      const e=map.get(k);
+      if(x.q&&!e.qty.includes(x.q))e.qty.push(x.q);
+      if(!e.src.includes(dish.name))e.src.push(dish.name);
+    });
+  }));
+  shopExtras(dayIdx).forEach((name,idx)=>{
+    const k=name.toLowerCase();
+    if(!map.has(k))map.set(k,{key:k,name,qty:[],src:['вручную'],extra:idx});
+    else map.get(k).extra=idx;
+  });
+  const buy=[],fridge=[];
+  map.forEach(it=>{(state.fridge[it.key]?fridge:buy).push(it);});
+  const cmp=(a,b)=>a.name.localeCompare(b.name,'ru');
+  buy.sort(cmp);fridge.sort(cmp);
+  return {buy,fridge};
+}
+function renderShop(){
+  $('#shopDays').innerHTML=DAY_SHORT.map((s,i)=>
+    `<button class="miniday ${i===shopDay?'active':''}" data-i="${i}">${s} ${dateFor(i).getDate()}</button>`).join('');
+  $('#shopDate').textContent=`${DAY_FULL[shopDay].toLowerCase()}, ${fmtDate(dateFor(shopDay))} · неделя ${$('#wkLabel').textContent}`;
+  const {buy,fridge}=shopRows(shopDay);
+  const row=it=>`<div class="srow">
+      <label><input type="checkbox" data-k="${esc(it.key)}" ${state.fridge[it.key]?'checked':''}>
+        <span>${esc(it.name)}${it.qty.length?` <small style="display:inline;color:var(--caramel)">· ${esc(it.qty.join(', '))}</small>`:''}
+          <small>для: ${esc(it.src.join(', '))}</small></span></label>
+      ${it.extra>=0?`<button class="del2" data-x="${it.extra}" title="Убрать ручную добавку">✕</button>`:''}
+    </div>`;
+  $('#shopBuy').innerHTML=buy.map(row).join('')||
+    '<p class="fine-sm">Покупать нечего: все ингредиенты отмечены или в этом дне нет блюд из каталога.</p>';
+  $('#shopFridge').innerHTML=fridge.map(row).join('')||'<p class="fine-sm">Отметок пока нет.</p>';
+}
+function updateShopBadge(){
+  const w=state.weeks[curKey];
+  const b=$('#shopBadge');
+  if(!w){b.hidden=true;return;}
+  const map=new Map();
+  MEALS.forEach(m=>w[todayIdx].meals[m.id].dishes.forEach(dish=>{
+    if(!dish.r)return;const r=state.recipes.find(x=>x.id===dish.r);if(!r)return;
+    r.ing.forEach(x=>map.set(x.n.toLowerCase(),x.n));
+  }));
+  const k0=keyOf(mondayDate(0));
+  ((state.shop&&state.shop[k0]&&state.shop[k0].extra)||[]).forEach(e=>map.set(e.toLowerCase(),e));
+  let n=0;map.forEach((v,k)=>{if(!state.fridge[k])n++;});
+  b.textContent=n;b.hidden=n===0;
+}
+$('#btnShop').addEventListener('click',()=>{
+  shopDay=(offset===0)?todayIdx:0;
+  renderShop();$('#shopDialog').showModal();
+});
+$('#shopDays').addEventListener('click',e=>{
+  const b=e.target.closest('.miniday');if(!b)return;
+  shopDay=+b.dataset.i;renderShop();
+});
+$('#shopDialog').addEventListener('change',e=>{
+  const cb=e.target.closest('input[type=checkbox][data-k]');if(!cb)return;
+  const k=cb.dataset.k;
+  if(cb.checked)state.fridge[k]=true;else delete state.fridge[k];
+  save();renderShop();updateShopBadge();
+});
+function addExtra(){
+  const v=$('#shopExtraIn').value.trim();if(!v)return;
+  shopExtras(shopDay).push(v);
+  $('#shopExtraIn').value='';
+  save();renderShop();updateShopBadge();
+}
+$('#shopExtraAdd').addEventListener('click',addExtra);
+$('#shopExtraIn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addExtra();}});
+$('#shopDialog').addEventListener('click',e=>{
+  const x=e.target.closest('[data-x]');if(!x)return;
+  shopExtras(shopDay).splice(+x.dataset.x,1);
+  save();renderShop();updateShopBadge();
+});
+
+/* ================== ПЕЧАТЬ: ДЕНЬ ИЛИ НЕДЕЛЯ ================== */
+function doPrint(mode){
+  const a=dateFor(0),b=dateFor(6);
+  $('#printTitle').textContent = mode==='day'
+    ? `Меню · ${DAY_FULL[activeDay].toLowerCase()}, ${fmtDate(dateFor(activeDay))}`
+    : `Меню на неделю ${a.getDate()} ${MGEN[a.getMonth()]} – ${b.getDate()} ${MGEN[b.getMonth()]} ${b.getFullYear()}`;
+  document.body.classList.remove('print-day','print-week');
+  document.body.classList.add(mode==='day'?'print-day':'print-week');
+  window.print();
+}
+window.addEventListener('afterprint',()=>document.body.classList.remove('print-day','print-week'));
+$('#btnPrint').addEventListener('click',e=>{
+  e.stopPropagation();
+  const menu=$('#printMenu');
+  menu.innerHTML=`<div class="pm-title">Что печатаем?</div>
+    <button data-mode="day">📄 Текущий день (${DAY_SHORT[activeDay]})</button>
+    <button data-mode="week">📑 Вся неделя</button>`;
+  const r=e.currentTarget.getBoundingClientRect();
+  menu.style.left=Math.min(r.left,window.innerWidth-210)+'px';
+  menu.style.top=(r.bottom+6)+'px';
+  menu.classList.add('open');
+  menu.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    menu.classList.remove('open');doPrint(b.dataset.mode);
+  }));
 });
 
 /* ================== ЭКСПОРТ КОПИИ ================== */
@@ -841,7 +1244,7 @@ function exportFile(){
   clone.querySelectorAll('dialog').forEach(d=>d.removeAttribute('open'));
   const bg=clone.querySelector('#bgPhoto'); if(bg)bg.removeAttribute('style');
   const tt=clone.querySelector('#bgTint'); if(tt)tt.removeAttribute('style');
-  const pm=clone.querySelector('#copyMenu'); if(pm)pm.classList.remove('open');
+  ['#copyMenu','#printMenu'].forEach(s=>{const m=clone.querySelector(s);if(m)m.classList.remove('open');});
   const to=clone.querySelector('#toast'); if(to){to.classList.remove('show');to.textContent='';}
   clone.querySelectorAll('.pop,.leaving').forEach(n=>n.classList.remove('pop','leaving'));
   const payload='<script id="embedded-state" type="application/json">'
@@ -881,15 +1284,7 @@ document.addEventListener('click',e=>{
     },200);return;
   }
   const add=e.target.closest('.add-dish');
-  if(add){
-    const d=+add.dataset.d,m=add.dataset.m;
-    WK[d].meals[m].dishes.push({name:'',who:ALL.slice()});
-    refreshMeal(d,m);save();
-    const holder=$(`#dishes-${d}-${m}`);
-    const last=holder.querySelector('.dish:last-child .dish-name');
-    if(last)last.focus();
-    return;
-  }
+  if(add){openPicker(+add.dataset.d,add.dataset.m);return;}
   const cb=e.target.closest('.copyBtn');
   if(cb){e.stopPropagation();openCopyMenu(cb,+cb.dataset.day);return;}
   const cl=e.target.closest('.clearBtn');
@@ -901,6 +1296,7 @@ document.addEventListener('click',e=>{
     }return;
   }
   if(!e.target.closest('#copyMenu')) $('#copyMenu').classList.remove('open');
+  if(!e.target.closest('#printMenu')) $('#printMenu').classList.remove('open');
 });
 
 document.addEventListener('input',e=>{
@@ -984,11 +1380,10 @@ $('#fileIn').addEventListener('change',e=>{
 });
 
 /* ================== ПРОЧЕЕ ================== */
-$('#btnPrint').addEventListener('click',()=>window.print());
 $('#btnSample').addEventListener('click',()=>{
   if(confirm('Заполнить эту неделю примерным меню? Текущие блюда недели будут заменены.')){
     const k=keyOf(mondayDate(offset));
-    state.weeks[k]=defaultWeek();WK=state.weeks[k];
+    state.weeks[k]=defaultWeek();migrate(state);WK=state.weeks[k];
     renderAllDays();showDay(activeDay);save();toast('Примерное меню восстановлено ↺');
   }
 });
@@ -997,12 +1392,12 @@ document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if
 $('#takeRemote').addEventListener('click',()=>{
   applyRemote(pendingRemote);
   $('#conflictDialog').close();
-  toast(pendingLabel==='облачную'?'Загружено из облака ✓':'Загружена версия из файла ✓');
+  toast(pendingLabel==='облако'?'Загружено из облака ✓':'Загружена версия из файла ✓');
   pendingRemote=null;
 });
 $('#keepMine').addEventListener('click',async()=>{
   $('#conflictDialog').close();
-  if(pendingLabel==='облачную'&&SYNC.token){
+  if(pendingLabel==='облако'&&SYNC.gist&&SYNC.token){
     try{await gistPush();toast('Оставили вашу версию и отправили её в облако ✓');}
     catch(e){toast('Оставили вашу версию ✓');}
   }else toast('Оставили вашу версию ✓');
